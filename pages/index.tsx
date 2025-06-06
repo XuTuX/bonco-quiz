@@ -1,115 +1,144 @@
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// 이미지 배열 랜덤 섞기
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 export default function Home() {
-  return (
-    <div
-      className={`${geistSans.className} ${geistMono.className} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              pages/index.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const [images, setImages] = useState<string[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [wrongList, setWrongList] = useState<string[]>([]);
+  const [isAnswerButtonDisabled, setIsAnswerButtonDisabled] = useState(false);
+
+  // 이미지 불러오기 + 랜덤 섞기
+  useEffect(() => {
+    fetch("/imageList.json")
+      .then((res) => res.json())
+      .then((data: string[]) => setImages(shuffleArray(data)));
+  }, []);
+
+  // "정답 보기" 클릭
+  const handleShowAnswer = () => {
+    if (isAnswerButtonDisabled) return;
+    setIsAnswerButtonDisabled(true);
+    setShowAnswer(true);
+    // 버튼 잠깐 비활성화 후 활성화
+    setTimeout(() => {
+      setIsAnswerButtonDisabled(false);
+    }, 300);
+  };
+
+  // "알아요" 클릭 → 바로 다음 문제
+  const handleKnow = () => {
+    setShowAnswer(false);
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  // "몰라요" 클릭 → 복습 목록 추가 후 다음 문제
+  const handleDontKnow = () => {
+    setWrongList((prev) => [...prev, images[currentIndex]]);
+    setShowAnswer(false);
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  // 로딩 중
+  if (images.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-lg text-gray-500">이미지 로딩 중...</p>
+      </div>
+    );
+  }
+
+  // 끝났을 때
+  if (currentIndex >= images.length) {
+    return (
+      <div className="flex flex-col items-center p-4 min-h-screen">
+        <h1 className="text-2xl font-bold mb-4">복습할 목록</h1>
+        <div className="w-full max-w-md">
+          {wrongList.length === 0 ? (
+            <p className="text-center text-gray-600">모두 맞추셨습니다! 🎉</p>
+          ) : (
+            wrongList.map((filename) => (
+              <div
+                key={filename}
+                className="flex items-center justify-between px-4 py-2 border-b last:border-b-0"
+              >
+                <span className="truncate">
+                  {filename.replace(/\.(jpg|jpeg|png)$/i, "")}
+                </span>
+              </div>
+            ))
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+      </div>
+    );
+  }
+
+  // 현재 이미지 및 정답 텍스트
+  const imageName = images[currentIndex];
+  const answerText = imageName.replace(/\.(jpg|jpeg|png)$/i, "");
+
+  return (
+    <div className="flex flex-col items-center justify-between min-h-screen p-4 bg-gray-50">
+      {/* 이미지 + 정답 */}
+      <div className="flex flex-col items-center w-full grow">
+        <div className="w-full max-w-md flex justify-center">
           <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+            src={`/images/${imageName}`}
+            alt="quiz"
+            width={300}
+            height={300}
+            className="object-contain max-h-[50vh] rounded-lg shadow-md"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </div>
+        <div className="mt-4 h-8">
+          {showAnswer && (
+            <div className="text-xl font-semibold text-blue-600">
+              정답: {answerText}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 버튼 */}
+      <div className="w-full max-w-md flex justify-center mt-6 mb-4">
+        {showAnswer ? (
+          // 정답 본 후 "알아요"/"몰라요" 버튼
+          <div className="w-full flex justify-between">
+            <button
+              onClick={handleDontKnow}
+              className="w-[48%] bg-red-400 hover:bg-red-500 text-white font-medium py-3 rounded-lg shadow-sm transition"
+            >
+              몰라요
+            </button>
+            <button
+              onClick={handleKnow}
+              className="w-[48%] bg-green-400 hover:bg-green-500 text-white font-medium py-3 rounded-lg shadow-sm transition"
+            >
+              알아요
+            </button>
+          </div>
+        ) : (
+          // 아직 정답 안 본 상태에서는 "정답 보기" 버튼
+          <button
+            onClick={handleShowAnswer}
+            disabled={isAnswerButtonDisabled}
+            className={`w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-lg shadow-sm transition ${isAnswerButtonDisabled ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+          >
+            정답 보기
+          </button>
+        )}
+      </div>
     </div>
   );
 }

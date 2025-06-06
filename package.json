@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "gen:images": "node scripts/generateImageList.js",
     "lint": "next lint"
   },
   "dependencies": {
