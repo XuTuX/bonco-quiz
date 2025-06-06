@@ -25,6 +25,20 @@ export default function Home() {
       .then((res) => res.json())
       .then((data: string[]) => setImages(shuffleArray(data)));
   }, []);
+  // 🔹 다음 카드 미리 캐싱
+  useEffect(() => {
+    // SSR 환경에서는 window가 없으니, 브라우저일 때만 실행하도록 체크
+    if (typeof window === "undefined") return;
+
+    if (images.length && currentIndex + 1 < images.length) {
+      const nextSrc = `/images/${images[currentIndex + 1]}`;
+
+      // ✨ 전역 DOM Image 생성자를 가리키려면 이렇게 작성하세요.
+      const preImg = new window.Image();
+      preImg.src = nextSrc;
+    }
+  }, [images, currentIndex]);
+
 
   // "정답 보기" 클릭
   const handleShowAnswer = () => {
@@ -126,6 +140,7 @@ export default function Home() {
                 alt="quiz"
                 width={300}
                 height={300}
+                priority
                 className="object-contain max-h-[70vh] rounded-t-lg"
               />
             </motion.div>
