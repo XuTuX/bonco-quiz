@@ -19,13 +19,14 @@ export default function QuizHome() {
 
     // 완료 시 선택된 초성으로 퀴즈 페이지 이동
     const startQuiz = () => {
-        if (selected.length === 0) return;
-        // /quiz/multi 에서 initials 쿼리로 받음
-        router.push({
-            pathname: "/quiz/multi/[initials]",
-            query: { initials: selected.join(",") },
-        });
-
+        if (selected.length === 1) {
+            router.push(`/quiz/${selected[0]}`);
+        } else {
+            router.push({
+                pathname: "/quiz/multi/[initials]",
+                query: { initials: selected },   // ❗️ string[] 이어야 합니다
+            });
+        }
     };
 
     return (

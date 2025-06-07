@@ -93,13 +93,14 @@ export default function QuizByInitial({ initial, cards }: Props) {
                     <ResultBlock title="오답 카드" list={wrongSet} />
 
                     {/* ← 나가기 버튼 */}
-                    <Link href="/quiz">
-                        <a className="mt-4 px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800">
-                            나가기
-                        </a>
+                    <Link href="/quiz"
+                        className="mt-4 px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800">
+
+                        나가기
+
                     </Link>
                 </div>
-            </Center>
+            </Center >
         );
     }
 
