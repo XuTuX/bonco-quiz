@@ -1,48 +1,74 @@
-
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+// pages/quiz/multi.tsx
+import { GetStaticPaths, GetStaticProps } from "next";
+import fs from "fs";
+import path from "path";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { getChoseong } from "@/utils/hangul";
-import shuffle from "@/utils/shuffle";  // utils/shuffle.ts 에서 export default shuffle
+import shuffle from "@/utils/shuffle";
 
-type Phase = "loading" | "learn" | "done";
+interface Props {
+    initialArr: string[];   // split(",") 된 ["ㄱ","ㄴ","ㄷ"]
+    cards: string[];        // SSG로 만들어진 카드 리스트
+}
 
-export default function QuizMulti() {
-    const router = useRouter();
-    const { initials } = router.query;
+type Phase = "learn" | "done";
 
-    // "ㄱ,ㄴ,ㄷ" → ["ㄱ","ㄴ","ㄷ"]
-    const initialArr = typeof initials === "string"
-        ? initials.split(",")
-        : [];
+export const getStaticPaths: GetStaticPaths = async () => {
+    const json = fs.readFileSync(path.join(process.cwd(), "public/imageList.json"), "utf-8");
+    const all: string[] = JSON.parse(json);
+    const initials = Array.from(new Set(
+        all.map(f => getChoseong(f.replace(/\.(jp(e?)g|png)$/i, "")))
+    ));
+    return {
+        paths: initials.map(i => ({ params: { initials: i } })),
+        fallback: "blocking",
+    };
+};
 
-    const [phase, setPhase] = useState<Phase>("loading");
-    const [cards, setCards] = useState<string[]>([]);
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+    const initialsParam = String(params!.initials);     // "ㄱ,ㄴ,ㄷ"
+    const initialArr = initialsParam.split(",");
+
+    const json = fs.readFileSync(path.join(process.cwd(), "public/imageList.json"), "utf-8");
+    const all: string[] = JSON.parse(json);
+
+    const cards = shuffle(
+        all.filter(f => {
+            const ch = getChoseong(f.replace(/\.(jp(e?)g|png)$/i, ""));
+            return initialArr.includes(ch);
+        })
+    );
+
+    return {
+        props: { initialArr, cards },
+    };
+};
+
+export default function QuizMulti({ initialArr, cards }: Props) {
+    const [phase, setPhase] = useState<Phase>(cards.length ? "learn" : "done");
     const [curr, setCurr] = useState(0);
     const [show, setShow] = useState(false);
     const [imgLoaded, setImgLoaded] = useState(false);
     const [wrongSet, setWrongSet] = useState<string[]>([]);
 
-    useEffect(() => {
-        if (!initialArr.length) {
+    const know = useCallback(() => {
+        setShow(false);
+        if (curr + 1 >= cards.length) {
             setPhase("done");
-            return;
+        } else {
+            setImgLoaded(false);
+            setCurr(i => i + 1);
         }
+    }, [curr, cards.length]);
 
-        fetch("/imageList.json")
-            .then(r => r.json())
-            .then((all: string[]) => {
-                // 배열 중 하나라도 일치하는 카드만
-                const filtered = all.filter(f => {
-                    const ch = getChoseong(f.replace(/\.(jpe?g|png)$/i, ""));
-                    return initialArr.includes(ch);
-                });
-                setCards(shuffle(filtered));
-                setPhase(filtered.length ? "learn" : "done");
-            });
-    }, [initialArr.join(",")]);
+    const dont = useCallback(() => {
+        const f = cards[curr];
+        if (!wrongSet.includes(f)) setWrongSet(w => [...w, f]);
+        know();
+    }, [curr, cards, wrongSet, know]);
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
@@ -56,49 +82,24 @@ export default function QuizMulti() {
         };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
-    }, [phase, show, curr, cards]);
-    const know = () => {
-        setShow(false);
-        nextCard();
-    };
+    }, [phase, show, dont, know]);
 
-    const dont = () => {
-        const f = cards[curr];
-        if (!wrongSet.includes(f)) setWrongSet(w => [...w, f]);
-        setShow(false);
-        nextCard();
-    };
-
-    const nextCard = () => {
-        if (curr + 1 >= cards.length) {
-            setPhase("done");
-        } else {
-            setImgLoaded(false);
-            setCurr(i => i + 1);
-        }
-    };
-
-    if (phase === "loading")
-        return <Center>로딩 중…</Center>;
-
-    if (phase === "done")
+    if (phase === "done") {
         return (
             <Center>
-                <div className="flex flex-col items-center space-y-10">
-                    <h1 className="text-2xl font-bold text-green-700 mb-4">
+                <div className="flex flex-col items-center space-y-6">
+                    <h1 className="text-2xl font-bold text-green-700">
                         🎉 {initialArr.join(", ")} 세트 완료!
                     </h1>
                     <ResultBlock title="오답 카드" list={wrongSet} />
                 </div>
             </Center>
         );
+    }
 
-    // 진행률 계산
     const total = cards.length;
     const prog = curr + 1;
     const pct = (prog / total) * 100;
-
-    // 현재 카드
     const file = cards[curr];
     const answer = file.replace(/\.(jp(e?)g|png)$/i, "");
     const disabled = !imgLoaded;
@@ -107,11 +108,11 @@ export default function QuizMulti() {
         <div className="flex flex-col items-center justify-between min-h-screen p-4 bg-gray-50">
             {/* 헤더 */}
             <div className="w-full max-w-md mb-4">
-                <div className="flex justify-between text-green-800 mb-1">
+                <div className="flex justify-between mb-1 text-green-800">
                     <span>{prog} / {total}</span>
                 </div>
                 <div className="w-full h-2 bg-gray-200 rounded-full">
-                    <div className="h-full bg-green-400" style={{ width: pct + "%" }} />
+                    <div className="h-full bg-green-400 transition-all" style={{ width: `${pct}%` }} />
                 </div>
             </div>
 
@@ -137,14 +138,12 @@ export default function QuizMulti() {
     );
 }
 
-// 가운데 정렬
 const Center = ({ children }: { children: React.ReactNode }) => (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
         {children}
     </div>
 );
 
-// 오답 리스트
 function ResultBlock({ title, list }: { title: string; list: string[] }) {
     return (
         <div className="w-full max-w-md">
@@ -155,9 +154,7 @@ function ResultBlock({ title, list }: { title: string; list: string[] }) {
                 {list.length === 0
                     ? <p className="text-gray-400">👏 모두 맞힘!</p>
                     : list.map(f => (
-                        <div key={f} className="truncate font-semibold">
-                            {f.replace(/\.(jp(e?)g|png)$/i, "")}
-                        </div>
+                        <div key={f} className="truncate font-semibold">{f.replace(/\.(jp(e?)g|png)$/i, "")}</div>
                     ))
                 }
             </div>
@@ -165,11 +162,15 @@ function ResultBlock({ title, list }: { title: string; list: string[] }) {
     );
 }
 
-// 카드 + 애니메이션
-function Card({ file, answer, show, loaded, onLoad, onToggle }: {
-    file: string; answer: string;
-    show: boolean; loaded: boolean;
-    onLoad: () => void; onToggle: () => void;
+function Card({
+    file, answer, show, loaded, onLoad, onToggle
+}: {
+    file: string;
+    answer: string;
+    show: boolean;
+    loaded: boolean;
+    onLoad: () => void;
+    onToggle: () => void;
 }) {
     return (
         <div onClick={onToggle}
@@ -187,10 +188,12 @@ function Card({ file, answer, show, loaded, onLoad, onToggle }: {
                     >
                         <Image
                             src={`/images/${file}`}
-                            width={650} height={650}
-                            priority className="object-contain max-h-[70vh]"
-                            onLoadingComplete={onLoad}
                             alt=""
+                            width={500}
+                            height={500}
+                            loading="lazy"
+                            className="object-contain max-h-[70vh]"
+                            onLoadingComplete={onLoad}
                         />
                     </motion.div>
                 </AnimatePresence>
@@ -202,10 +205,14 @@ function Card({ file, answer, show, loaded, onLoad, onToggle }: {
     );
 }
 
-// 버튼들
-function Controls({ show, disabled, know, dont, reveal }: {
-    show: boolean; disabled: boolean;
-    know: () => void; dont: () => void; reveal: () => void;
+function Controls({
+    show, disabled, know, dont, reveal
+}: {
+    show: boolean;
+    disabled: boolean;
+    know: () => void;
+    dont: () => void;
+    reveal: () => void;
 }) {
     return (
         <div className="w-full max-w-md flex justify-center mt-6 mb-4">

@@ -1,48 +1,59 @@
 // pages/quiz/[initial].tsx
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { GetStaticPaths, GetStaticProps } from "next";
+import fs from "fs";
+import path from "path";
 import { getChoseong } from "@/utils/hangul";
 import shuffle from "@/utils/shuffle";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 
-/* ───────── helpers ───────── */
-type Phase = "loading" | "learn" | "done";
+export const getStaticPaths: GetStaticPaths = async () => {
+    const json = fs.readFileSync(path.join(process.cwd(), "public/imageList.json"), "utf-8");
+    const allFiles: string[] = JSON.parse(json);
+    const initials = Array.from(new Set(
+        allFiles.map(f => getChoseong(f.replace(/\.(jpe?g|png)$/i, "")))
+    ));
+    return {
+        paths: initials.map(i => ({ params: { initial: i } })),
+        fallback: false,
+    };
+};
 
-export default function QuizByInitial() {
-    const router = useRouter();
-    const { initial } = router.query;
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+    const initial = params!.initial as string;
+    const json = fs.readFileSync(path.join(process.cwd(), "public/imageList.json"), "utf-8");
+    const allFiles: string[] = JSON.parse(json);
+    const cards = shuffle(
+        allFiles.filter(f =>
+            getChoseong(f.replace(/\.(jp(e?)g|png)$/i, "")) === initial
+        )
+    );
+    return { props: { initial, cards } };
+};
 
-    const [phase, setPhase] = useState<Phase>("loading");
-    const [cards, setCards] = useState<string[]>([]);
+interface Props {
+    initial: string;
+    cards: string[];
+}
+
+type Phase = "learn" | "done";
+
+export default function QuizByInitial({ initial, cards }: Props) {
+    // 1) cards, initial 은 props 로 이미 주어지므로 useRouter/useState(cards) 전부 삭제
+    // 2) phase 는 cards.length 에 따라 초기값 결정
+    const [phase, setPhase] = useState<Phase>(cards.length ? "learn" : "done");
     const [curr, setCurr] = useState(0);
     const [show, setShow] = useState(false);
     const [imgLoaded, setImgLoaded] = useState(false);
     const [wrongSet, setWrongSet] = useState<string[]>([]);
 
-    /* ───────── 이미지 로딩 ───────── */
-    useEffect(() => {
-        if (!initial) return;
-
-        fetch("/imageList.json")
-            .then(r => r.json())
-            .then((arr: string[]) => {
-                const filtered = arr.filter(
-                    (f) => getChoseong(f.replace(/\.(jp(e?)g|png)$/i, "")) === initial
-                );
-                const list = shuffle(filtered);
-                setCards(list);
-                setPhase(list.length ? "learn" : "done");
-            });
-    }, [initial]);
-
-    /* ───────── 키보드 컨트롤 ───────── */
+    // keyboard, handlers 는 그대로 사용
     useEffect(() => {
         const key = (e: KeyboardEvent) => {
             if (phase !== "learn") return;
-            if (!show) {
-                setShow(true);
-            } else {
+            if (!show) setShow(true);
+            else {
                 if (e.key === "ArrowLeft") dont();
                 if (e.key === "ArrowRight") know();
             }
@@ -51,33 +62,26 @@ export default function QuizByInitial() {
         return () => window.removeEventListener("keydown", key);
     }, [phase, show, curr, cards]);
 
-    /* ───────── 핸들러 ───────── */
     const know = () => {
         setShow(false);
         next();
     };
-
     const dont = () => {
         const f = cards[curr];
-        if (!wrongSet.includes(f)) setWrongSet((w) => [...w, f]);
+        if (!wrongSet.includes(f)) setWrongSet(w => [...w, f]);
         setShow(false);
         next();
     };
-
     const next = () => {
-        if (curr + 1 >= cards.length) {
-            setPhase("done");
-        } else {
+        if (curr + 1 >= cards.length) setPhase("done");
+        else {
             setImgLoaded(false);
-            setCurr((i) => i + 1);
+            setCurr(i => i + 1);
         }
     };
 
-    /* ───────── 렌더링 ───────── */
-    if (phase === "loading")
-        return <Center>로딩 중…</Center>;
-
-    if (phase === "done")
+    // render
+    if (phase === "done") {
         return (
             <Center>
                 <div className="space-y-6">
@@ -88,8 +92,8 @@ export default function QuizByInitial() {
                 </div>
             </Center>
         );
+    }
 
-    /* 학습 화면 */
     const total = cards.length;
     const prog = curr + 1;
     const pct = (prog / total) * 100;
@@ -133,6 +137,9 @@ export default function QuizByInitial() {
         </div>
     );
 }
+
+// 이하 Center, ResultBlock, Card, Controls는 기존 코드 유지
+
 
 /* ────────── 재사용 컴포넌트 ────────── */
 const Center = ({ children }: { children: React.ReactNode }) => (
