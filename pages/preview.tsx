@@ -21,7 +21,8 @@ function PreviewGrid({ files }: { files: string[] }) {
     return (
         <div
             className="grid gap-4 p-6 w-full max-w-screen-xl
-                 xl:grid-cols-2 lg:grid-cols-2 sm:grid-cols-1 grid-cols-2"
+                 xl:grid-cols-2 lg:grid-cols-2 sm:grid-cols-1 grid-cols-2
+                 select-none"
         >
             {files.map((f) => {
                 const isFlipped = flipped.has(f);
@@ -31,7 +32,8 @@ function PreviewGrid({ files }: { files: string[] }) {
                         key={f}
                         onClick={() => toggle(f)}
                         className="aspect-square border rounded-xl shadow-sm
-                       flex items-center justify-center cursor-pointer bg-white
+                       flex items-center justify-center cursor-pointer bg-black/20
+
                        hover:shadow-md transition"
                     >
                         {isFlipped ? (
