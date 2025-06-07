@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             {/* 헤더 */}
             <header className="w-full p-4 bg-white shadow-sm flex justify-between items-center">
                 <div className="text-lg font-semibold text-gray-700">
-                    나찬혁이 만든 본초!
+                    본초 2차 수시 화이팅!
                 </div>
                 <Link
                     href="/"
