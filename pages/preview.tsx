@@ -45,7 +45,7 @@ function PreviewGrid({ files }: { files: string[] }) {
                                 {label}
                             </span>
                         ) : (
-                            <Image
+                            <img
                                 src={`/images/${f}`}
                                 alt={label}
                                 width={1500}
