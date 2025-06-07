@@ -6,12 +6,15 @@ export default function Layout({ children }: { children: ReactNode }) {
     return (
         <div className="min-h-screen bg-gray-50">
             {/* 헤더 */}
-            <header className="w-full p-4 bg-white shadow-sm flex justify-end">
-                <Link href="/"
-                    className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded">
-
+            <header className="w-full p-4 bg-white shadow-sm flex justify-between items-center">
+                <div className="text-lg font-semibold text-gray-700">
+                    나찬혁이 만든 본초!
+                </div>
+                <Link
+                    href="/"
+                    className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+                >
                     HOME
-
                 </Link>
             </header>
 
