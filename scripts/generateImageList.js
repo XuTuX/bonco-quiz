@@ -1,21 +1,27 @@
-// scripts/generateImageList.js
-
+// scripts/fixAndGenerateImageList.js
 const fs = require("fs");
 const path = require("path");
 
-// 이미지 폴더 경로
 const imagesDir = path.join(__dirname, "../public/images");
+const jsonPath = path.join(__dirname, "../public/imageList.json");
 
-// 저장될 JSON 파일 경로
-const outputFile = path.join(__dirname, "../public/imageList.json");
-
-// 이미지 확장자만 필터링
-const imageList = fs
+const imageFiles = fs
     .readdirSync(imagesDir)
-    .filter((file) => /\.(jpg|jpeg|png)$/i.test(file)) // 이미지 파일만
-    .sort(); // 이름순 정렬 (선택사항)
+    .filter((f) => /\.(jpe?g|png)$/i.test(f));
 
-// JSON 파일로 저장
-fs.writeFileSync(outputFile, JSON.stringify(imageList, null, 2), "utf-8");
+const normalized = imageFiles.map((oldName) => {
+    const nfcName = oldName.normalize("NFC"); // 완성형으로 변환
+    if (oldName !== nfcName) {
+        // 디스크 파일도 rename
+        fs.renameSync(
+            path.join(imagesDir, oldName),
+            path.join(imagesDir, nfcName)
+        );
+        console.log(`🔄 rename: ${oldName} → ${nfcName}`);
+    }
+    return nfcName;
+}).sort();
 
-console.log("✅ imageList.json 생성 완료!");
+// JSON 작성
+fs.writeFileSync(jsonPath, JSON.stringify(normalized, null, 2), "utf-8");
+console.log("✅ imageList.json (NFC) 생성 완료");
