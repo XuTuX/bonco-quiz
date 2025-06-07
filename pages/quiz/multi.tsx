@@ -84,10 +84,12 @@ export default function QuizMulti() {
     if (phase === "done")
         return (
             <Center>
-                <h1 className="text-2xl font-bold text-green-700 mb-4">
-                    🎉 {initialArr.join(", ")} 세트 완료!
-                </h1>
-                <ResultBlock title="오답 카드" list={wrongSet} />
+                <div className="flex flex-col items-center space-y-10">
+                    <h1 className="text-2xl font-bold text-green-700 mb-4">
+                        🎉 {initialArr.join(", ")} 세트 완료!
+                    </h1>
+                    <ResultBlock title="오답 카드" list={wrongSet} />
+                </div>
             </Center>
         );
 
