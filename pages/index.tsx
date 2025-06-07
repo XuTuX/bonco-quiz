@@ -362,8 +362,8 @@ function Card({
             <Image
               src={`/images/${file}`}
               alt=""
-              width={300}
-              height={300}
+              width={650}
+              height={650}
               priority
               className="object-contain max-h-[70vh]"
               onLoadingComplete={onLoad}
