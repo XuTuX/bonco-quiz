@@ -64,10 +64,13 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     };
 };
 
-export default function QuizMulti({ initialArr, cards }: Props) {
+export default function QuizMulti({ initialArr, cards: initialCards }: Props) {
     const [phase, setPhase] = useState<Phase>(
-        cards.length ? "learn" : "done"
+        initialCards.length ? "learn" : "done"
     );
+    const [cards, setCards] = useState<string[]>(initialCards);
+
+
     const [curr, setCurr] = useState(0);
     const [show, setShow] = useState(false);
     const [imgLoaded, setImgLoaded] = useState(false);
@@ -107,13 +110,23 @@ export default function QuizMulti({ initialArr, cards }: Props) {
     }, [phase, show, dont, know]);
 
     if (phase === "done") {
+        const retryWrongSet = () => {
+            if (wrongSet.length === 0) return;
+            setPhase("learn");
+            setCurr(0);
+            setShow(false);
+            setImgLoaded(false);
+            setWrongSet([]); // ★ 기존 오답 비우고 새롭게 다시 저장될 수 있게
+            setCards(shuffle([...wrongSet])); // ★ 오답만 카드로 설정
+        };
+
         return (
             <Center>
-                <div className="flex flex-col items-center space-y-6">
+                <div className="flex flex-col items-center space-y-6 px-4">
                     <h1 className="text-2xl font-bold text-green-700">
                         🎉 {initialArr.join(",")} 세트 완료!
                     </h1>
-                    <ResultBlock title="오답 카드" list={wrongSet} />
+                    <ResultBlock title="오답 카드" list={wrongSet} onRetry={retryWrongSet} />
                     <Link
                         href="/quiz"
                         className="mt-4 px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800"
@@ -124,6 +137,7 @@ export default function QuizMulti({ initialArr, cards }: Props) {
             </Center>
         );
     }
+
 
     const total = cards.length;
     const prog = curr + 1;
@@ -176,23 +190,57 @@ const Center = ({ children }: { children: React.ReactNode }) => (
     </div>
 );
 
-function ResultBlock({ title, list }: { title: string; list: string[] }) {
+function ResultBlock({
+    title,
+    list,
+    onRetry,
+}: {
+    title: string;
+    list: string[];
+    onRetry?: () => void;
+}) {
+    if (list.length === 0) return null;
+
     return (
-        <div className="w-full max-w-md">
-            <h2 className="font-bold text-lg mb-2 flex items-center gap-2">
+        <div className="w-full max-w-3xl">
+            <h2 className="font-bold text-xl mb-4 flex items-center gap-2 text-blue-700">
                 <span>📝</span> {title}
             </h2>
-            <div className="border-2 rounded-xl px-4 py-3 bg-blue-50 max-h-64 overflow-y-auto">
-                {list.length === 0 ? (
-                    <p className="text-gray-400">👏 모두 맞힘!</p>
-                ) : (
-                    list.map((f) => (
-                        <div key={f} className="truncate font-semibold">
-                            {f.replace(/\.(jpe?g|png)$/i, "")}
-                        </div>
-                    ))
-                )}
-            </div>
+
+            {list.length === 0 ? (
+                <p className="text-gray-400">👏 모두 맞힘!</p>
+            ) : (
+                <>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {list.map((f) => {
+                            const label = f.replace(/\.(jpe?g|png)$/i, "");
+                            return (
+                                <div
+                                    key={f}
+                                    className="rounded-xl border shadow-sm bg-white/80 p-2"
+                                >
+                                    <img
+                                        src={`/images/${f}`}
+                                        alt={label}
+                                        className="rounded object-contain h-32 w-full mx-auto"
+                                        draggable={false}
+                                    />
+                                    <p className="text-center font-semibold mt-2">{label}</p>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {onRetry && (
+                        <button
+                            onClick={onRetry}
+                            className="mt-6 px-6 py-2 bg-red-100 hover:bg-red-200 text-red-700 font-semibold rounded-lg"
+                        >
+                            오답만 다시 풀기
+                        </button>
+                    )}
+                </>
+            )}
         </div>
     );
 }
