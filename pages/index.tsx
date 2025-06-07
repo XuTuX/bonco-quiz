@@ -145,8 +145,8 @@ export default function Home() {
                   key={n}
                   onClick={() => setBatchChoice(n as BatchChoice)}
                   className={`px-4 py-2 rounded-lg border ${batchChoice === n
-                    ? "bg-blue-500 text-white"
-                    : "bg-white text-gray-800 hover:bg-gray-100"
+                      ? "bg-blue-500 text-white"
+                      : "bg-white text-gray-800 hover:bg-gray-100"
                     }`}
                 >
                   {n === "all" ? "전체 카드" : `${n} 장`}
@@ -158,8 +158,8 @@ export default function Home() {
               onClick={startLearning}
               disabled={!batchChoice}
               className={`px-6 py-3 rounded-lg text-white transition ${batchChoice
-                ? "bg-green-500 hover:bg-green-600"
-                : "bg-gray-400 cursor-not-allowed"
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-gray-400 cursor-not-allowed"
                 }`}
             >
               학습 시작
@@ -202,17 +202,13 @@ export default function Home() {
     return (
       <Center>
         <div className="flex flex-col items-center gap-4">
-          <p className="text-lg font-semibold">
-            {batchIndex + 1} 세트 완료!
-          </p>
+          <p className="text-lg font-semibold">{batchIndex + 1} 세트 완료!</p>
           <button
             onClick={nextBatch}
             className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
           >
             {batchChoice === "all" ||
-              (batchIndex + 1) *
-              (batchChoice as number) >=
-              allCards.length
+              (batchIndex + 1) * (batchChoice as number) >= allCards.length
               ? "전체 종료"
               : "다음 세트 시작"}
           </button>
@@ -224,7 +220,6 @@ export default function Home() {
 
   /* LOADING */
   if (currentSet.length === 0) return <Center>이미지 로딩 중…</Center>;
-
   /* 준비 화면 */
   if (curr >= currentSet.length) return <Center>다음 세트를 준비 중…</Center>;
 
@@ -306,38 +301,42 @@ function ResultBlock({
     yellow: "⭐️",
   };
 
+  /* small 옵션에 따른 높이·글꼴 크기 */
+  const sizeCls = small
+    ? "min-h-[120px] max-h-[240px] text-sm"
+    : "min-h-[200px] max-h-[400px] text-base";
+
   return (
-    <div className={`mb-4`}>
+    <div className="mb-4">
       <div className="flex items-center gap-2 mb-1">
         <span className="text-xl">{iconMap[accent]}</span>
-        <h2 className={`font-bold text-${accent}-700 text-lg`}>{title}</h2>
+        <h2 className={`font-bold text-${accent}-700 ${small ? "text-md" : "text-lg"}`}>
+          {title}
+        </h2>
       </div>
       <div
         className={`
           border-2 rounded-xl px-4 py-4
           ${accentMap[accent]}
-          min-h-[200px] max-h-[400px] w-full min-w-[300px]
+          ${sizeCls} w-full min-w-[300px]
           overflow-y-auto shadow-inner
         `}
-
       >
         {list.length === 0 ? (
-          <div className="text-gray-400 text-sm">👏 모두 맞힘!</div>
+          <div className="text-gray-400">👏 모두 맞힘!</div>
         ) : (
           <div className="grid grid-cols-2 gap-1">
             {list.map((f) => (
-              <div key={f} className="text-lg font-semibold text-gray-800">
+              <div key={f} className="font-semibold text-gray-800 truncate">
                 {f.replace(/\.(jp(e?)g|png)$/i, "")}
               </div>
             ))}
           </div>
-
         )}
       </div>
     </div>
   );
 }
-
 
 function Card({
   file,
