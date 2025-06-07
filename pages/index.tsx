@@ -171,6 +171,13 @@ export default function Home() {
             >
               전체 카드 미리보기
             </Link>
+            <Link
+              href="/quiz"
+              className="inline-block px-6 py-3 mt-4 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-white font-semibold"
+            >
+              ✨ 초성별 랜덤 퀴즈로 가기
+            </Link>
+
 
           </div>
         )}
