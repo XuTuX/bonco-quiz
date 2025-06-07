@@ -1,4 +1,5 @@
 // pages/index.tsx
+import Link from "next/link";          // ★ 추가
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -127,6 +128,53 @@ export default function Home() {
     }
   };
 
+  /* ───────── preview grid ───────── */
+
+  function PreviewGrid({ files }: { files: string[] }) {
+    /** flip된 파일명을 Set으로 저장 */
+    const [flipped, setFlipped] = useState<Set<string>>(new Set());
+
+    /** 이미지 ↔ 텍스트 토글 */
+    const toggle = (f: string) =>
+      setFlipped((prev) => {
+        const next = new Set(prev);
+        next.has(f) ? next.delete(f) : next.add(f);
+        return next;
+      });
+
+    return (
+      <div className="grid grid-cols-5 gap-2 w-full max-w-4xl">
+        {files.map((f) => {
+          const isFlipped = flipped.has(f);
+          const label = f.replace(/\.(jp(e?)g|png)$/i, "");
+
+          return (
+            <div
+              key={f}
+              onClick={() => toggle(f)}
+              className="aspect-square border rounded-lg flex items-center justify-center cursor-pointer bg-white shadow-sm"
+            >
+              {isFlipped ? (
+                <span className="text-sm font-semibold text-gray-800 px-2 text-center">
+                  {label}
+                </span>
+              ) : (
+                <Image
+                  src={`/images/${f}`}
+                  alt=""
+                  width={120}
+                  height={120}
+                  className="object-contain max-h-full"
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+
   /* ───────── UI 분기 ───────── */
 
   /* SETUP */
@@ -145,8 +193,8 @@ export default function Home() {
                   key={n}
                   onClick={() => setBatchChoice(n as BatchChoice)}
                   className={`px-4 py-2 rounded-lg border ${batchChoice === n
-                      ? "bg-blue-500 text-white"
-                      : "bg-white text-gray-800 hover:bg-gray-100"
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-gray-800 hover:bg-gray-100"
                     }`}
                 >
                   {n === "all" ? "전체 카드" : `${n} 장`}
@@ -158,27 +206,20 @@ export default function Home() {
               onClick={startLearning}
               disabled={!batchChoice}
               className={`px-6 py-3 rounded-lg text-white transition ${batchChoice
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-gray-400 cursor-not-allowed"
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-gray-400 cursor-not-allowed"
                 }`}
             >
               학습 시작
             </button>
-
-            {/* 카드 이름 미리보기 */}
-            <div
-              className="
-                mt-8 w-full max-w-2xl max-h-[80vh]
-                overflow-y-auto border rounded-lg p-4 bg-white shadow-inner
-                grid grid-cols-2 gap-2 text-base
-              "
+            <Link
+              href="/preview"
+              className="mt-2 inline-block px-6 py-3 rounded-lg
+             bg-purple-500 hover:bg-purple-600 text-white transition-colors"
             >
-              {allCards.map((c) => (
-                <div key={c} className="truncate">
-                  {c.replace(/\.(jp(e?)g|png)$/i, "")}
-                </div>
-              ))}
-            </div>
+              전체 카드 미리보기
+            </Link>
+
           </div>
         )}
       </Center>
