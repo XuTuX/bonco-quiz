@@ -1,4 +1,5 @@
 // pages/quiz/[initial].tsx
+import Link from "next/link";   // ← 맨 위에 추가
 import { GetStaticPaths, GetStaticProps } from "next";
 import fs from "fs";
 import path from "path";
@@ -84,11 +85,19 @@ export default function QuizByInitial({ initial, cards }: Props) {
     if (phase === "done") {
         return (
             <Center>
-                <div className="space-y-6">
-                    <h1 className="text-2xl font-bold text-green-700 text-center">
-                        🎉 [{initial}] 세트 완료!
+                <div className="flex flex-col items-center space-y-6">
+                    {/* 완료 UI */}
+                    <h1 className="text-2xl font-bold text-green-700">
+                        🎉 {initial} 세트 완료!
                     </h1>
                     <ResultBlock title="오답 카드" list={wrongSet} />
+
+                    {/* ← 나가기 버튼 */}
+                    <Link href="/quiz">
+                        <a className="mt-4 px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800">
+                            나가기
+                        </a>
+                    </Link>
                 </div>
             </Center>
         );

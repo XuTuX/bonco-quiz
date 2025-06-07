@@ -1,4 +1,5 @@
-// pages/quiz/multi.tsx
+// pages/quiz/multi/[initials].tsx
+import Link from "next/link";
 import { GetStaticPaths, GetStaticProps } from "next";
 import fs from "fs";
 import path from "path";
@@ -10,34 +11,50 @@ import { getChoseong } from "@/utils/hangul";
 import shuffle from "@/utils/shuffle";
 
 interface Props {
-    initialArr: string[];   // split(",") 된 ["ㄱ","ㄴ","ㄷ"]
-    cards: string[];        // SSG로 만들어진 카드 리스트
+    initialArr: string[];   // e.g. ["ㄱ"]
+    cards: string[];        // 해당 초성으로 필터된 이미지 파일명 리스트
 }
 
 type Phase = "learn" | "done";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const json = fs.readFileSync(path.join(process.cwd(), "public/imageList.json"), "utf-8");
+    // public/imageList.json 에서 모든 파일 읽고, 첫글자(초성)만 모아 경로 생성
+    const json = fs.readFileSync(
+        path.join(process.cwd(), "public/imageList.json"),
+        "utf-8"
+    );
     const all: string[] = JSON.parse(json);
-    const initials = Array.from(new Set(
-        all.map(f => getChoseong(f.replace(/\.(jp(e?)g|png)$/i, "")))
-    ));
+    const initials = Array.from(
+        new Set(
+            all.map((f) =>
+                getChoseong(f.replace(/\.(jpe?g|png)$/i, ""))
+            )
+        )
+    );
+
     return {
-        paths: initials.map(i => ({ params: { initials: i } })),
+        paths: initials.map((i) => ({
+            params: { initials: i },
+        })),
         fallback: "blocking",
     };
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-    const initialsParam = String(params!.initials);     // "ㄱ,ㄴ,ㄷ"
+    const initialsParam = params!.initials as string; // e.g. "ㄱ"
     const initialArr = initialsParam.split(",");
 
-    const json = fs.readFileSync(path.join(process.cwd(), "public/imageList.json"), "utf-8");
+    const json = fs.readFileSync(
+        path.join(process.cwd(), "public/imageList.json"),
+        "utf-8"
+    );
     const all: string[] = JSON.parse(json);
 
     const cards = shuffle(
-        all.filter(f => {
-            const ch = getChoseong(f.replace(/\.(jp(e?)g|png)$/i, ""));
+        all.filter((f) => {
+            const ch = getChoseong(
+                f.replace(/\.(jpe?g|png)$/i, "")
+            );
             return initialArr.includes(ch);
         })
     );
@@ -48,7 +65,9 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 };
 
 export default function QuizMulti({ initialArr, cards }: Props) {
-    const [phase, setPhase] = useState<Phase>(cards.length ? "learn" : "done");
+    const [phase, setPhase] = useState<Phase>(
+        cards.length ? "learn" : "done"
+    );
     const [curr, setCurr] = useState(0);
     const [show, setShow] = useState(false);
     const [imgLoaded, setImgLoaded] = useState(false);
@@ -60,13 +79,15 @@ export default function QuizMulti({ initialArr, cards }: Props) {
             setPhase("done");
         } else {
             setImgLoaded(false);
-            setCurr(i => i + 1);
+            setCurr((i) => i + 1);
         }
     }, [curr, cards.length]);
 
     const dont = useCallback(() => {
-        const f = cards[curr];
-        if (!wrongSet.includes(f)) setWrongSet(w => [...w, f]);
+        const file = cards[curr];
+        if (!wrongSet.includes(file)) {
+            setWrongSet((w) => [...w, file]);
+        }
         know();
     }, [curr, cards, wrongSet, know]);
 
@@ -80,6 +101,7 @@ export default function QuizMulti({ initialArr, cards }: Props) {
                 if (e.key === "ArrowRight") know();
             }
         };
+
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
     }, [phase, show, dont, know]);
@@ -89,9 +111,15 @@ export default function QuizMulti({ initialArr, cards }: Props) {
             <Center>
                 <div className="flex flex-col items-center space-y-6">
                     <h1 className="text-2xl font-bold text-green-700">
-                        🎉 {initialArr.join(", ")} 세트 완료!
+                        🎉 {initialArr.join(",")} 세트 완료!
                     </h1>
                     <ResultBlock title="오답 카드" list={wrongSet} />
+                    <Link
+                        href="/quiz"
+                        className="mt-4 px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800"
+                    >
+                        나가기
+                    </Link>
                 </div>
             </Center>
         );
@@ -101,18 +129,21 @@ export default function QuizMulti({ initialArr, cards }: Props) {
     const prog = curr + 1;
     const pct = (prog / total) * 100;
     const file = cards[curr];
-    const answer = file.replace(/\.(jp(e?)g|png)$/i, "");
+    const answer = file.replace(/\.(jpe?g|png)$/i, "");
     const disabled = !imgLoaded;
 
     return (
         <div className="flex flex-col items-center justify-between min-h-screen p-4 bg-gray-50">
-            {/* 헤더 */}
+            {/* 진행 바 */}
             <div className="w-full max-w-md mb-4">
                 <div className="flex justify-between mb-1 text-green-800">
                     <span>{prog} / {total}</span>
                 </div>
                 <div className="w-full h-2 bg-gray-200 rounded-full">
-                    <div className="h-full bg-green-400 transition-all" style={{ width: `${pct}%` }} />
+                    <div
+                        className="h-full bg-green-400 transition-all"
+                        style={{ width: `${pct}%` }}
+                    />
                 </div>
             </div>
 
@@ -123,7 +154,7 @@ export default function QuizMulti({ initialArr, cards }: Props) {
                 show={show}
                 loaded={imgLoaded}
                 onLoad={() => setImgLoaded(true)}
-                onToggle={() => setShow(s => !s)}
+                onToggle={() => setShow((s) => !s)}
             />
 
             {/* 버튼 */}
@@ -138,6 +169,7 @@ export default function QuizMulti({ initialArr, cards }: Props) {
     );
 }
 
+
 const Center = ({ children }: { children: React.ReactNode }) => (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
         {children}
@@ -151,19 +183,27 @@ function ResultBlock({ title, list }: { title: string; list: string[] }) {
                 <span>📝</span> {title}
             </h2>
             <div className="border-2 rounded-xl px-4 py-3 bg-blue-50 max-h-64 overflow-y-auto">
-                {list.length === 0
-                    ? <p className="text-gray-400">👏 모두 맞힘!</p>
-                    : list.map(f => (
-                        <div key={f} className="truncate font-semibold">{f.replace(/\.(jp(e?)g|png)$/i, "")}</div>
+                {list.length === 0 ? (
+                    <p className="text-gray-400">👏 모두 맞힘!</p>
+                ) : (
+                    list.map((f) => (
+                        <div key={f} className="truncate font-semibold">
+                            {f.replace(/\.(jpe?g|png)$/i, "")}
+                        </div>
                     ))
-                }
+                )}
             </div>
         </div>
     );
 }
 
 function Card({
-    file, answer, show, loaded, onLoad, onToggle
+    file,
+    answer,
+    show,
+    loaded,
+    onLoad,
+    onToggle,
 }: {
     file: string;
     answer: string;
@@ -173,8 +213,10 @@ function Card({
     onToggle: () => void;
 }) {
     return (
-        <div onClick={onToggle}
-            className="w-full max-w-md bg-white rounded-xl border-2 border-green-100 shadow-md overflow-hidden cursor-pointer">
+        <div
+            onClick={onToggle}
+            className="w-full max-w-md bg-white rounded-xl border-2 border-green-100 shadow-md overflow-hidden cursor-pointer"
+        >
             <div className="relative w-full aspect-square bg-gray-100">
                 {!loaded && <div className="absolute inset-0 animate-pulse bg-gray-200" />}
                 <AnimatePresence mode="wait">
@@ -206,7 +248,11 @@ function Card({
 }
 
 function Controls({
-    show, disabled, know, dont, reveal
+    show,
+    disabled,
+    know,
+    dont,
+    reveal,
 }: {
     show: boolean;
     disabled: boolean;
@@ -218,16 +264,26 @@ function Controls({
         <div className="w-full max-w-md flex justify-center mt-6 mb-4">
             {show ? (
                 <div className="w-full flex gap-4">
-                    <button onClick={dont} className="w-1/2 bg-red-400 hover:bg-red-500 text-white py-3 rounded-lg">
+                    <button
+                        onClick={dont}
+                        className="w-1/2 bg-red-400 hover:bg-red-500 text-white py-3 rounded-lg"
+                    >
                         몰라요
                     </button>
-                    <button onClick={know} className="w-1/2 bg-green-400 hover:bg-green-500 text-white py-3 rounded-lg">
+                    <button
+                        onClick={know}
+                        className="w-1/2 bg-green-400 hover:bg-green-500 text-white py-3 rounded-lg"
+                    >
                         알아요
                     </button>
                 </div>
             ) : (
-                <button onClick={reveal} disabled={disabled}
-                    className={`w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg ${disabled && "opacity-50"}`}>
+                <button
+                    onClick={reveal}
+                    disabled={disabled}
+                    className={`w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg ${disabled ? "opacity-50" : ""
+                        }`}
+                >
                     정답 보기
                 </button>
             )}

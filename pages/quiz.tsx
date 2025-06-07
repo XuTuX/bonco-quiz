@@ -22,9 +22,10 @@ export default function QuizHome() {
         if (selected.length === 0) return;
         // /quiz/multi 에서 initials 쿼리로 받음
         router.push({
-            pathname: "/quiz/multi",
+            pathname: "/quiz/multi/[initials]",
             query: { initials: selected.join(",") },
         });
+
     };
 
     return (
