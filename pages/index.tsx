@@ -128,54 +128,6 @@ export default function Home() {
     }
   };
 
-  /* ───────── preview grid ───────── */
-
-  function PreviewGrid({ files }: { files: string[] }) {
-    /** flip된 파일명을 Set으로 저장 */
-    const [flipped, setFlipped] = useState<Set<string>>(new Set());
-
-    /** 이미지 ↔ 텍스트 토글 */
-    const toggle = (f: string) =>
-      setFlipped((prev) => {
-        const next = new Set(prev);
-        next.has(f) ? next.delete(f) : next.add(f);
-        return next;
-      });
-
-    return (
-      <div className="grid grid-cols-5 gap-2 w-full max-w-4xl">
-        {files.map((f) => {
-          const isFlipped = flipped.has(f);
-          const label = f.replace(/\.(jp(e?)g|png)$/i, "");
-
-          return (
-            <div
-              key={f}
-              onClick={() => toggle(f)}
-              className="aspect-square border rounded-lg flex items-center justify-center cursor-pointer bg-white shadow-sm"
-            >
-              {isFlipped ? (
-                <span className="text-sm font-semibold text-gray-800 px-2 text-center">
-                  {label}
-                </span>
-              ) : (
-                <Image
-                  src={`/images/${f}`}
-                  alt=""
-                  width={120}
-                  height={120}
-                  className="object-contain max-h-full"
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
-
-  /* ───────── UI 분기 ───────── */
 
   /* SETUP */
   if (phase === "setup")

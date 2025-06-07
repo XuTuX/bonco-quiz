@@ -10,9 +10,14 @@ function PreviewGrid({ files }: { files: string[] }) {
     const toggle = (f: string) =>
         setFlipped((p) => {
             const n = new Set(p);
-            n.has(f) ? n.delete(f) : n.add(f);
+            if (n.has(f)) {
+                n.delete(f);
+            } else {
+                n.add(f);
+            }
             return n;
         });
+
 
     return (
         <div
@@ -60,11 +65,13 @@ function PreviewGrid({ files }: { files: string[] }) {
 export default function PreviewPage() {
     const [files, setFiles] = useState<string[]>([]);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
-        fetch("/imageList.json")
-            .then((r) => r.json())
-            .then((d: string[]) => setFiles((d)));
+        fetch('/imageList.json')
+            .then(r => r.json())
+            .then((d: string[]) => setFiles(d));
     }, []);
+
 
     if (files.length === 0)
         return (
