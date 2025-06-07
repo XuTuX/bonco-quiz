@@ -240,7 +240,7 @@ function Card({
 }) {
     return (
         <div
-            className="w-full max-w-md lg:max-w-2xl bg-white rounded-xl border-2
+            className="w-full max-w-md lg:max-w-xl bg-white rounded-xl border-2
                  border-green-100 shadow-md overflow-hidden cursor-pointer"
             onClick={onToggle}
         >

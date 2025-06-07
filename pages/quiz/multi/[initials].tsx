@@ -203,7 +203,7 @@ function ResultBlock({
 
     return (
         <div className="w-full max-w-3xl">
-            <h2 className="font-bold text-xl mb-4 flex items-center gap-2 text-blue-700">
+            <h2 className="font-bold-2 text-xl mb-4 flex items-center gap-2 text-blue-700">
                 <span>📝</span> {title}
             </h2>
 
@@ -263,7 +263,9 @@ function Card({
     return (
         <div
             onClick={onToggle}
-            className="w-full max-w-md bg-white rounded-xl border-2 border-green-100 shadow-md overflow-hidden cursor-pointer"
+            className="w-full max-w-md lg:max-w-xl bg-white rounded-xl border-2
+            border-green-100 shadow-md overflow-hidden cursor-pointer"
+
         >
             <div className="relative w-full aspect-square bg-gray-100">
                 {!loaded && <div className="absolute inset-0 animate-pulse bg-gray-200" />}
@@ -282,7 +284,7 @@ function Card({
                             width={500}
                             height={500}
                             loading="lazy"
-                            className="object-contain max-h-[70vh]"
+                            className="object-contain max-h-[90vh]"
                             onLoadingComplete={onLoad}
                         />
                     </motion.div>
@@ -309,7 +311,7 @@ function Controls({
     reveal: () => void;
 }) {
     return (
-        <div className="w-full max-w-md flex justify-center mt-6 mb-4">
+        <div className="w-full max-w-xl flex justify-center mt-6 mb-4">
             {show ? (
                 <div className="w-full flex gap-4">
                     <button
