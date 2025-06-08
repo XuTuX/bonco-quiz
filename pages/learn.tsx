@@ -106,7 +106,7 @@ export default function Learn() {
         if (lock) return;
         setLock(true);
         setShow(true);
-        setTimeout(() => setLock(false), 300);
+        setTimeout(() => setLock(false), 100);
     };
     const know = () => {
         setShow(false);
