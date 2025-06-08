@@ -259,7 +259,7 @@ function Card({
     onLoad: () => void;
 }) {
     return (
-        <div className="w-full max-w-md lg:max-w-2xl xl:max-w-3xl bg-white rounded-xl border-2 border-green-100 shadow-md overflow-hidden">
+        <div className="w-full max-w-md lg:max-w-2xl xl:max-w-2xl bg-white rounded-xl border-2 border-green-100 shadow-md overflow-hidden">
             <div className="relative w-full aspect-square bg-gray-100">
                 {!loaded && <div className="absolute inset-0 animate-pulse bg-gray-200" />}
                 <AnimatePresence mode="wait">
@@ -274,8 +274,8 @@ function Card({
                         <Image
                             src={`/images/${file}`}
                             alt=""
-                            width={650}
-                            height={650}
+                            width={600}
+                            height={600}
                             priority
                             className="object-contain max-h-[70vh]"
                             onLoadingComplete={onLoad}
