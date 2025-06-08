@@ -89,7 +89,7 @@ export default function Learn() {
         const handleKey = (e: KeyboardEvent) => {
             if (lock) return;
             if (phase === 'batch-done') {
-                nextBatch();
+                if (e.key === 'ArrowRight') nextBatch();
             } else if (!show) {
                 showAns();
             } else {
@@ -149,21 +149,30 @@ export default function Learn() {
                     <p className="text-lg font-semibold">{batchIndex + 1} 세트 완료!</p>
 
                     <div className="flex flex-col items-center gap-2 w-full max-w-xs">
-                        {wrongBatch.length > 0 && (
-                            <button
-                                onClick={() => {
-                                    // 이번 세트 오답만 다시 풀기
-                                    setCurrentSet(wrongBatch);
-                                    setWrongBatch([]);
-                                    setWrongTotal([]);
-                                    setCurr(0);
-                                    setPhase('learn');
-                                }}
-                                className="w-full px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg"
-                            >
-                                오답만 다시 풀기
-                            </button>
-                        )}
+                        {wrongBatch.length > 0 &&
+                            (batchChoice === 'all' ||
+                                (batchIndex + 1) * (batchChoice as number) >= allCards.length) && (
+                                <button
+                                    onClick={() => {
+                                        // 이번 세트 오답만 다시 풀기
+                                        setCurrentSet(wrongBatch);
+                                        setWrongBatch([]);
+                                        setWrongTotal([]);
+                                        setCurr(0);
+                                        setPhase('learn');
+                                    }}
+                                    className="w-full px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg"
+                                >
+                                    오답만 다시 풀기
+                                </button>
+                            )}
+
+                        <button
+                            onClick={nextBatch}
+                            className="w-full px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
+                        >
+                            다음 세트로 넘어가기
+                        </button>
                         <Link
                             href="/"
                             className="w-full block text-center px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg"
