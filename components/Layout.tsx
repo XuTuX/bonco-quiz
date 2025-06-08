@@ -1,6 +1,7 @@
 // components/Layout.tsx
 import Link from "next/link";
 import { ReactNode } from "react";
+import { Analytics } from "@vercel/analytics/next";
 
 export default function Layout({ children }: { children: ReactNode }) {
     return (
@@ -22,6 +23,8 @@ export default function Layout({ children }: { children: ReactNode }) {
             <main className="p-4">
                 {children}
             </main>
+            {/* Vercel Analytics: 페이지뷰 계측 */}
+            <Analytics />
         </div>
     );
 }
