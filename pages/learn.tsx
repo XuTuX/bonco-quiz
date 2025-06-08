@@ -154,8 +154,9 @@ export default function Learn() {
                                 (batchIndex + 1) * (batchChoice as number) >= allCards.length) && (
                                 <button
                                     onClick={() => {
+                                        const merged = Array.from(new Set([...wrongBatch, ...wrongTotal])); // 중복 제거
                                         // 이번 세트 오답만 다시 풀기
-                                        setCurrentSet(wrongBatch);
+                                        setCurrentSet(merged);
                                         setWrongBatch([]);
                                         setWrongTotal([]);
                                         setCurr(0);
