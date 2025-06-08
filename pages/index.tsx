@@ -12,7 +12,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
       <h1 className="text-xl font-semibold mb-6">한 세트에 몇 장씩 학습할까요?</h1>
 
-      return (
+
       {/* 배치 선택 */}
       <div className="flex flex-wrap justify-center gap-3 mb-6">
         {BATCH_OPTIONS.map((n) => (
@@ -31,7 +31,7 @@ export default function Home() {
           </button>
         ))}
       </div>
-      );
+
 
       {/* 액션 버튼들 */}
       <div className="flex flex-col items-center gap-4">
