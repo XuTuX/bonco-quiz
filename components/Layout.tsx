@@ -5,15 +5,15 @@ import { Analytics } from "@vercel/analytics/next";
 
 export default function Layout({ children }: { children: ReactNode }) {
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gradient-to-br from-purple-400 to-indigo-600">
             {/* 헤더 */}
-            <header className="w-full p-4 bg-white shadow-sm flex justify-between items-center">
-                <div className="text-lg font-semibold text-gray-700">
-                    본초 2차 수시 화이팅!
+            <header className="w-full p-4 bg-opacity-50 bg-black shadow-md flex justify-between items-center">
+                <div className="text-xl font-bold text-white">
+                    My Quiz App
                 </div>
                 <Link
                     href="/"
-                    className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+                    className="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-semibold rounded-lg shadow"
                 >
                     HOME
                 </Link>

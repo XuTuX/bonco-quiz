@@ -8,6 +8,7 @@ import shuffle from "@/utils/shuffle";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import Layout from '@/components/Layout';
 
 export const getStaticPaths: GetStaticPaths = async () => {
     const json = fs.readFileSync(path.join(process.cwd(), "public/imageList.json"), "utf-8");
@@ -95,20 +96,22 @@ export default function QuizByInitial({ initial, cards: initialCards }: Props) {
         };
 
         return (
-            <Center>
-                <div className="flex flex-col items-center space-y-6 px-4">
-                    <h1 className="text-2xl font-bold text-green-700">
-                        🎉 {initial} 세트 완료!
-                    </h1>
-                    <ResultBlock title="오답 카드" list={wrongSet} onRetry={retryWrongSet} />
-                    <Link
-                        href="/quiz"
-                        className="mt-4 px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800"
-                    >
-                        나가기
-                    </Link>
-                </div>
-            </Center>
+            <Layout>
+                <Center>
+                    <div className="flex flex-col items-center space-y-6 px-4">
+                        <h1 className="text-3xl font-bold text-yellow-400 mb-8">
+                            🎉 {initial} 세트 완료!
+                        </h1>
+                        <ResultBlock title="오답 카드" list={wrongSet} onRetry={retryWrongSet} />
+                        <Link
+                            href="/quiz"
+                            className="mt-6 px-8 py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-xl shadow-md"
+                        >
+                            나가기
+                        </Link>
+                    </div>
+                </Center>
+            </Layout>
         );
     }
 
@@ -121,21 +124,22 @@ export default function QuizByInitial({ initial, cards: initialCards }: Props) {
     const disabled = !imgLoaded;
 
     return (
-        <div className="flex flex-col items-center justify-between min-h-screen p-4 bg-gray-50">
-            {/* 헤더 */}
-            <div className="w-full max-w-md mb-4">
-                <div className="flex justify-between mb-1 font-medium text-green-800">
-                    <span>{prog} / {total}</span>
+        <Layout>
+            <div className="flex flex-col items-center justify-start p-4 text-white min-h-[calc(100vh-var(--header-height,80px))]">
+                {/* 헤더 */}
+                <div className="w-full max-w-md mb-4">
+                    <div className="flex justify-between mb-1 font-medium text-indigo-200">
+                        <span className="text-white">{prog} / {total}</span>
+                    </div>
+                    <div className="w-full h-2 bg-white bg-opacity-20 rounded-full">
+                        <div
+                            className="h-full bg-yellow-400 transition-all rounded-full"
+                            style={{ width: `${pct}%` }}
+                        />
+                    </div>
                 </div>
-                <div className="w-full h-2 bg-gray-200 rounded-full">
-                    <div
-                        className="h-full bg-green-400 transition-all"
-                        style={{ width: `${pct}%` }}
-                    />
-                </div>
-            </div>
 
-            {/* 카드 */}
+                {/* 카드 */}
             <Card
                 file={file}
                 answer={answer}
@@ -162,7 +166,7 @@ export default function QuizByInitial({ initial, cards: initialCards }: Props) {
 
 /* ────────── 재사용 컴포넌트 ────────── */
 const Center = ({ children }: { children: React.ReactNode }) => (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="flex flex-col items-center justify-center p-4 text-white min-h-[calc(100vh-var(--header-height,80px))]">
         {children}
     </div>
 );
@@ -180,7 +184,7 @@ function ResultBlock({
 
     return (
         <div className="w-full max-w-3xl">
-            <h2 className="font-bold text-xl mb-4 flex items-center gap-2 text-blue-700">
+            <h2 className="font-bold text-2xl mb-6 flex items-center gap-2 text-indigo-300">
                 <span>📝</span> {title}
             </h2>
 
@@ -194,7 +198,7 @@ function ResultBlock({
                             return (
                                 <div
                                     key={f}
-                                    className="rounded-xl border shadow-sm bg-white/80 p-2"
+                                    className="rounded-xl border border-white border-opacity-20 shadow-md bg-white bg-opacity-10 backdrop-blur-md p-3"
                                 >
                                     <img
                                         src={`/images/${f}`}
@@ -202,7 +206,7 @@ function ResultBlock({
                                         className="rounded object-contain h-32 w-full mx-auto"
                                         draggable={false}
                                     />
-                                    <p className="text-center font-semibold mt-2">{label}</p>
+                                    <p className="text-center font-semibold mt-2 text-gray-100">{label}</p>
                                 </div>
                             );
                         })}
@@ -211,7 +215,7 @@ function ResultBlock({
                     {onRetry && (
                         <button
                             onClick={onRetry}
-                            className="mt-6 px-6 py-2 bg-red-100 hover:bg-red-200 text-red-700 font-semibold rounded-lg"
+                            className="mt-8 px-8 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-xl shadow-md"
                         >
                             오답만 다시 풀기
                         </button>
@@ -240,12 +244,12 @@ function Card({
 }) {
     return (
         <div
-            className="w-full max-w-md lg:max-w-xl bg-white rounded-xl border-2
-                 border-green-100 shadow-md overflow-hidden cursor-pointer"
+            className="w-full max-w-md lg:max-w-xl bg-white bg-opacity-10 backdrop-blur-md rounded-xl border-2
+                 border-purple-300 border-opacity-50 shadow-lg overflow-hidden cursor-pointer"
             onClick={onToggle}
         >
-            <div className="relative w-full aspect-square bg-gray-100">
-                {!loaded && <div className="absolute inset-0 animate-pulse bg-gray-200" />}
+            <div className="relative w-full aspect-square bg-transparent"> {/* Adjusted bg-gray-100 to transparent or similar */}
+                {!loaded && <div className="absolute inset-0 animate-pulse bg-white bg-opacity-10" />}
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={file}
@@ -269,7 +273,7 @@ function Card({
             </div>
             <div className="p-4 h-12 flex items-center justify-center">
                 {show && (
-                    <span className="text-xl font-semibold text-blue-600">
+                    <span className="text-xl font-semibold text-yellow-300">
                         정답: {answer}
                     </span>
                 )}
@@ -297,13 +301,13 @@ function Controls({
                 <div className="w-full flex gap-4">
                     <button
                         onClick={dont}
-                        className="w-1/2 bg-red-400 hover:bg-red-500 text-white py-3 rounded-lg"
+                        className="w-1/2 bg-red-500 hover:bg-red-600 text-white font-semibold py-4 rounded-xl shadow-md"
                     >
                         몰라요
                     </button>
                     <button
                         onClick={know}
-                        className="w-1/2 bg-green-400 hover:bg-green-500 text-white py-3 rounded-lg"
+                        className="w-1/2 bg-green-500 hover:bg-green-600 text-white font-semibold py-4 rounded-xl shadow-md"
                     >
                         알아요
                     </button>
@@ -312,7 +316,7 @@ function Controls({
                 <button
                     onClick={reveal}
                     disabled={disabled}
-                    className={`w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg ${disabled && "opacity-50"}`}
+                    className={`w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold py-4 rounded-xl shadow-md ${disabled && "opacity-50"}`}
                 >
                     정답 보기
                 </button>
