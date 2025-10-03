@@ -5,7 +5,7 @@ import { getChoseong } from "@/utils/hangul";
 import shuffle from "@/utils/shuffle";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 type Phase = "loading" | "learn" | "done";
 
@@ -43,6 +43,26 @@ export default function QuizByInitial() {
             });
     }, [router.isReady, initial, set, router]);
 
+    const next = useCallback(() => {
+        if (curr + 1 >= cards.length) setPhase("done");
+        else {
+            setImgLoaded(false);
+            setCurr((i) => i + 1);
+        }
+    }, [curr, cards.length]);
+
+    const know = useCallback(() => {
+        setShow(false);
+        next();
+    }, [next]);
+
+    const dont = useCallback(() => {
+        const f = cards[curr];
+        if (!wrongSet.includes(f)) setWrongSet((w) => [...w, f]);
+        setShow(false);
+        next();
+    }, [cards, curr, wrongSet, next]);
+
     useEffect(() => {
         const key = (e: KeyboardEvent) => {
             if (phase !== "learn") return;
@@ -54,25 +74,7 @@ export default function QuizByInitial() {
         };
         window.addEventListener("keydown", key);
         return () => window.removeEventListener("keydown", key);
-    }, [phase, show, curr, cards]);
-
-    const know = () => {
-        setShow(false);
-        next();
-    };
-    const dont = () => {
-        const f = cards[curr];
-        if (!wrongSet.includes(f)) setWrongSet((w) => [...w, f]);
-        setShow(false);
-        next();
-    };
-    const next = () => {
-        if (curr + 1 >= cards.length) setPhase("done");
-        else {
-            setImgLoaded(false);
-            setCurr((i) => i + 1);
-        }
-    };
+    }, [phase, show, dont, know]);
     
     if (phase === "loading") {
         return <Center>퀴즈 로딩 중...</Center>

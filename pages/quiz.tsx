@@ -13,7 +13,7 @@ export default function QuizHome() {
         if (router.isReady && !set) {
             router.replace('/');
         }
-    }, [router.isReady, set]);
+    }, [router.isReady, set, router]);
 
     // 초성 토글 선택/해제
     const toggle = (ch: string) => {

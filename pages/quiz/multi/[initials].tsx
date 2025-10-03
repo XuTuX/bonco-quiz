@@ -8,10 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getChoseong } from "@/utils/hangul";
 import shuffle from "@/utils/shuffle";
 
-interface Props {
-    initialArr: string[];
-    cards: string[];
-}
+
 
 type Phase = "loading" | "learn" | "done";
 
