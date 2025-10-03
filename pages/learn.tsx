@@ -35,6 +35,43 @@ export default function Learn() {
     const [imgLoaded, setImgLoaded] = useState(false);
     const [initialized, setInitialized] = useState(false);
 
+    // Handlers
+    const showAns = useCallback(() => {
+        if (lock) return;
+        setLock(true);
+        setShow(true);
+        setTimeout(() => setLock(false), 100);
+    }, [lock]);
+    const know = useCallback(() => {
+        setShow(false);
+        setCurr((i) => i + 1);
+    }, []);
+    const dont = useCallback(() => {
+        const f = currentSet[curr];
+        if (!wrongBatch.includes(f)) setWrongBatch((w) => [...w, f]);
+        if (!wrongTotal.includes(f)) setWrongTotal((w) => [...w, f]);
+        setShow(false);
+        setCurr((i) => i + 1);
+    }, [currentSet, curr, wrongBatch, wrongTotal]);
+
+    // 다음 배치로 이동
+    const nextBatch = useCallback(() => {
+        if (batchChoice === null) return;
+
+        const sizeVal = batchChoice === 'all' ? allCards.length : batchChoice;
+        const nextStart = (batchIndex + 1) * sizeVal;
+
+        if (nextStart >= allCards.length) {
+            setPhase('all-done');
+        } else {
+            setCurrentSet(allCards.slice(nextStart, nextStart + sizeVal));
+            setBatchIndex((i) => i + 1);
+            setCurr(0);
+            setWrongBatch([]);
+            setPhase('learn');
+        }
+    }, [batchChoice, allCards, batchIndex]);
+
     // 1) 파라미터 체크 & 이미지 목록 로드 → 첫 배치 세팅
     useEffect(() => {
         if (!router.isReady || initialized) return;
@@ -103,43 +140,6 @@ export default function Learn() {
         window.addEventListener('keydown', handleKey);
         return () => window.removeEventListener('keydown', handleKey);
     }, [show, lock, phase, nextBatch, showAns, dont, know]);
-
-    // Handlers
-    const showAns = useCallback(() => {
-        if (lock) return;
-        setLock(true);
-        setShow(true);
-        setTimeout(() => setLock(false), 100);
-    }, [lock]);
-    const know = useCallback(() => {
-        setShow(false);
-        setCurr((i) => i + 1);
-    }, []);
-    const dont = useCallback(() => {
-        const f = currentSet[curr];
-        if (!wrongBatch.includes(f)) setWrongBatch((w) => [...w, f]);
-        if (!wrongTotal.includes(f)) setWrongTotal((w) => [...w, f]);
-        setShow(false);
-        setCurr((i) => i + 1);
-    }, [currentSet, curr, wrongBatch, wrongTotal]);
-
-    // 다음 배치로 이동
-    const nextBatch = useCallback(() => {
-        if (batchChoice === null) return;
-
-        const sizeVal = batchChoice === 'all' ? allCards.length : batchChoice;
-        const nextStart = (batchIndex + 1) * sizeVal;
-
-        if (nextStart >= allCards.length) {
-            setPhase('all-done');
-        } else {
-            setCurrentSet(allCards.slice(nextStart, nextStart + sizeVal));
-            setBatchIndex((i) => i + 1);
-            setCurr(0);
-            setWrongBatch([]);
-            setPhase('learn');
-        }
-    }, [batchChoice, allCards, batchIndex]);
 
     // --- 화면 분기 ---
     if (!initialized) return <Center>로딩 중…</Center>;
