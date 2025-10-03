@@ -1,4 +1,4 @@
-// pages/preview.tsx
+// pages/preview-1-2.tsx
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getChoseong } from "@/utils/hangul";
@@ -26,7 +26,7 @@ function PreviewGrid({ files }: { files: string[] }) {
         >
             {files.map((f) => {
                 const isFlipped = flipped.has(f);
-                const label = f.replace(/\.(jpe?g|png)$/i, "");
+                const label = f.substring(f.lastIndexOf('/') + 1).replace(/\.(jpe?g|png)$/i, "");
                 return (
                     <div
                         key={f}
@@ -82,7 +82,7 @@ function SideNav({ initials }: { initials: string[] }) {
 function groupByChoseong(files: string[]) {
     const map: Record<string, string[]> = {};
     files.forEach((f) => {
-        const label = f.replace(/\.(jpe?g|png)$/i, "");
+        const label = f.substring(f.lastIndexOf('/') + 1).replace(/\.(jpe?g|png)$/i, "");
         const key = getChoseong(label);
         if (!map[key]) map[key] = [];
         map[key]!.push(f);
@@ -96,7 +96,7 @@ export default function PreviewPage() {
     const [files, setFiles] = useState<string[]>([]);
 
     useEffect(() => {
-        fetch("/imageList.json")
+        fetch("/imageList-1-2.json")
             .then((res) => res.json())
             .then((data: string[]) => setFiles(data));
     }, []);
@@ -114,7 +114,7 @@ export default function PreviewPage() {
 
     return (
         <main className="min-h-screen flex flex-col items-center bg-gray-50 scroll-smooth">
-            <h1 className="text-2xl font-bold mt-8 mb-4">전체 카드 미리보기</h1>
+            <h1 className="text-2xl font-bold mt-8 mb-4">본1-2학기 1차수시</h1>
 
             <Link
                 href="/"

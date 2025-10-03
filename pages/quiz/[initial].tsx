@@ -1,56 +1,48 @@
 // pages/quiz/[initial].tsx
-import Link from "next/link";   // ← 맨 위에 추가
-import { GetStaticPaths, GetStaticProps } from "next";
-import fs from "fs";
-import path from "path";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { getChoseong } from "@/utils/hangul";
 import shuffle from "@/utils/shuffle";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
-export const getStaticPaths: GetStaticPaths = async () => {
-    const json = fs.readFileSync(path.join(process.cwd(), "public/imageList.json"), "utf-8");
-    const allFiles: string[] = JSON.parse(json);
-    const initials = Array.from(new Set(
-        allFiles.map(f => getChoseong(f.replace(/\.(jpe?g|png)$/i, "")))
-    ));
-    return {
-        paths: initials.map(i => ({ params: { initial: i } })),
-        fallback: false,
-    };
-};
+type Phase = "loading" | "learn" | "done";
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-    const initial = params!.initial as string;
-    const json = fs.readFileSync(path.join(process.cwd(), "public/imageList.json"), "utf-8");
-    const allFiles: string[] = JSON.parse(json);
-    const cards = shuffle(
-        allFiles.filter(f =>
-            getChoseong(f.replace(/\.(jp(e?)g|png)$/i, "")) === initial
-        )
-    );
-    return { props: { initial, cards } };
-};
+export default function QuizByInitial() {
+    const router = useRouter();
+    const { initial, set } = router.query;
 
-interface Props {
-    initial: string;
-    cards: string[];
-}
-
-type Phase = "learn" | "done";
-
-export default function QuizByInitial({ initial, cards: initialCards }: Props) {
-    // 1) cards, initial 은 props 로 이미 주어지므로 useRouter/useState(cards) 전부 삭제
-    // 2) phase 는 cards.length 에 따라 초기값 결정
-    const [cards, setCards] = useState<string[]>(initialCards);
-    const [phase, setPhase] = useState<Phase>(cards.length ? "learn" : "done");
+    const [cards, setCards] = useState<string[]>([]);
+    const [phase, setPhase] = useState<Phase>("loading");
     const [curr, setCurr] = useState(0);
     const [show, setShow] = useState(false);
     const [imgLoaded, setImgLoaded] = useState(false);
     const [wrongSet, setWrongSet] = useState<string[]>([]);
 
-    // keyboard, handlers 는 그대로 사용
+    useEffect(() => {
+        if (!router.isReady) return;
+        if (!initial || !set) {
+            router.replace("/quiz");
+            return;
+        }
+
+        fetch(`/imageList-${set}.json`)
+            .then((res) => res.json())
+            .then((allFiles: string[]) => {
+                const filteredCards = shuffle(
+                    allFiles.filter(
+                        (f) =>
+                            getChoseong(
+                                f.substring(f.lastIndexOf("/") + 1).replace(/\\.(jpe?g|png)$/i, "")
+                            ) === initial
+                    )
+                );
+                setCards(filteredCards);
+                setPhase(filteredCards.length ? "learn" : "done");
+            });
+    }, [router.isReady, initial, set, router]);
+
     useEffect(() => {
         const key = (e: KeyboardEvent) => {
             if (phase !== "learn") return;
@@ -70,7 +62,7 @@ export default function QuizByInitial({ initial, cards: initialCards }: Props) {
     };
     const dont = () => {
         const f = cards[curr];
-        if (!wrongSet.includes(f)) setWrongSet(w => [...w, f]);
+        if (!wrongSet.includes(f)) setWrongSet((w) => [...w, f]);
         setShow(false);
         next();
     };
@@ -78,11 +70,14 @@ export default function QuizByInitial({ initial, cards: initialCards }: Props) {
         if (curr + 1 >= cards.length) setPhase("done");
         else {
             setImgLoaded(false);
-            setCurr(i => i + 1);
+            setCurr((i) => i + 1);
         }
     };
+    
+    if (phase === "loading") {
+        return <Center>퀴즈 로딩 중...</Center>
+    }
 
-    // render
     if (phase === "done") {
         const retryWrongSet = () => {
             if (wrongSet.length === 0) return;
@@ -102,7 +97,7 @@ export default function QuizByInitial({ initial, cards: initialCards }: Props) {
                     </h1>
                     <ResultBlock title="오답 카드" list={wrongSet} onRetry={retryWrongSet} />
                     <Link
-                        href="/quiz"
+                        href={`/set/${set}`}
                         className="mt-4 px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800"
                     >
                         나가기
@@ -112,17 +107,15 @@ export default function QuizByInitial({ initial, cards: initialCards }: Props) {
         );
     }
 
-
     const total = cards.length;
     const prog = curr + 1;
     const pct = (prog / total) * 100;
     const file = cards[curr];
-    const answer = file.replace(/\.(jp(e?)g|png)$/i, "");
+    const answer = file.substring(file.lastIndexOf("/") + 1).replace(/\\.(jp(e?)g|png)$/i, "");
     const disabled = !imgLoaded;
 
     return (
         <div className="flex flex-col items-center justify-between min-h-screen p-4 bg-gray-50">
-            {/* 헤더 */}
             <div className="w-full max-w-md mb-4">
                 <div className="flex justify-between mb-1 font-medium text-green-800">
                     <span>{prog} / {total}</span>
@@ -135,7 +128,6 @@ export default function QuizByInitial({ initial, cards: initialCards }: Props) {
                 </div>
             </div>
 
-            {/* 카드 */}
             <Card
                 file={file}
                 answer={answer}
@@ -145,7 +137,6 @@ export default function QuizByInitial({ initial, cards: initialCards }: Props) {
                 onToggle={() => setShow(!show)}
             />
 
-            {/* 버튼 */}
             <Controls
                 show={show}
                 disabled={disabled}
@@ -156,9 +147,6 @@ export default function QuizByInitial({ initial, cards: initialCards }: Props) {
         </div>
     );
 }
-
-// 이하 Center, ResultBlock, Card, Controls는 기존 코드 유지
-
 
 /* ────────── 재사용 컴포넌트 ────────── */
 const Center = ({ children }: { children: React.ReactNode }) => (
@@ -171,8 +159,7 @@ function ResultBlock({
     title,
     list,
     onRetry,
-}: {
-    title: string;
+}: {    title: string;
     list: string[];
     onRetry?: () => void;
 }) {
@@ -190,15 +177,17 @@ function ResultBlock({
                 <>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {list.map((f) => {
-                            const label = f.replace(/\.(jpe?g|png)$/i, "");
+                            const label = f.substring(f.lastIndexOf("/") + 1).replace(/\\.(jpe?g|png)$/i, "");
                             return (
                                 <div
                                     key={f}
                                     className="rounded-xl border shadow-sm bg-white/80 p-2"
                                 >
-                                    <img
+                                    <Image
                                         src={`/images/${f}`}
                                         alt={label}
+                                        width={400}
+                                        height={400}
                                         className="rounded object-contain h-32 w-full mx-auto"
                                         draggable={false}
                                     />

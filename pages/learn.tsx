@@ -38,19 +38,21 @@ export default function Learn() {
     // 1) 파라미터 체크 & 이미지 목록 로드 → 첫 배치 세팅
     useEffect(() => {
         if (!router.isReady || initialized) return;
+        const { set, size } = router.query;
 
         let bc: BatchChoice | null = null;
         if (typeof size === 'string') {
             if (size === 'all') bc = 'all';
             else if (!isNaN(Number(size))) bc = Number(size);
         }
-        if (bc === null) {
+
+        if (bc === null || !set) {
             router.replace('/');
             return;
         }
         setBatchChoice(bc);
 
-        fetch('/imageList.json')
+        fetch(`/imageList-${set}.json`)
             .then((r) => r.json())
             .then((data: string[]) => {
                 const cards = shuffle(data);
@@ -74,6 +76,7 @@ export default function Learn() {
         if (typeof window === 'undefined') return;
         if (currentSet.length && curr + 1 < currentSet.length) {
             new window.Image().src = `/images/${currentSet[curr + 1]}`;
+
         }
     }, [currentSet, curr]);
 
@@ -197,7 +200,7 @@ export default function Learn() {
     const prog = curr + 1;
     const pct = (prog / total) * 100;
     const file = currentSet[curr];
-    const answer = file.replace(/\.(jp(e?)g|png)$/i, '');
+    const answer = file.substring(file.lastIndexOf('/') + 1).replace(/\.(jp(e?)g|png)$/i, '');
     const disabled = lock || !imgLoaded;
 
     return (
@@ -314,7 +317,7 @@ function GridResultBlock({
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {items.map((f) => {
-                    const label = f.replace(/\.(jp(e?)g|png)$/i, '');
+                    const label = f.substring(f.lastIndexOf('/') + 1).replace(/\.(jp(e?)g|png)$/i, '');
                     return (
                         <div
                             key={f}

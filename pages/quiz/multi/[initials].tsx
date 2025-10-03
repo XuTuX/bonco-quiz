@@ -1,8 +1,6 @@
 // pages/quiz/multi/[initials].tsx
 import Link from "next/link";
-import { GetStaticPaths, GetStaticProps } from "next";
-import fs from "fs";
-import path from "path";
+import { useRouter } from "next/router";
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,70 +9,48 @@ import { getChoseong } from "@/utils/hangul";
 import shuffle from "@/utils/shuffle";
 
 interface Props {
-    initialArr: string[];   // e.g. ["ㄱ"]
-    cards: string[];        // 해당 초성으로 필터된 이미지 파일명 리스트
+    initialArr: string[];
+    cards: string[];
 }
 
-type Phase = "learn" | "done";
+type Phase = "loading" | "learn" | "done";
 
-export const getStaticPaths: GetStaticPaths = async () => {
-    // public/imageList.json 에서 모든 파일 읽고, 첫글자(초성)만 모아 경로 생성
-    const json = fs.readFileSync(
-        path.join(process.cwd(), "public/imageList.json"),
-        "utf-8"
-    );
-    const all: string[] = JSON.parse(json);
-    const initials = Array.from(
-        new Set(
-            all.map((f) =>
-                getChoseong(f.replace(/\.(jpe?g|png)$/i, ""))
-            )
-        )
-    );
+export default function QuizMulti() {
+    const router = useRouter();
+    const { initials: initialsParam, set } = router.query;
 
-    return {
-        paths: initials.map((i) => ({
-            params: { initials: i },
-        })),
-        fallback: "blocking",
-    };
-};
-
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-    const initialsParam = params!.initials as string; // e.g. "ㄱ"
-    const initialArr = initialsParam.split(",");
-
-    const json = fs.readFileSync(
-        path.join(process.cwd(), "public/imageList.json"),
-        "utf-8"
-    );
-    const all: string[] = JSON.parse(json);
-
-    const cards = shuffle(
-        all.filter((f) => {
-            const ch = getChoseong(
-                f.replace(/\.(jpe?g|png)$/i, "")
-            );
-            return initialArr.includes(ch);
-        })
-    );
-
-    return {
-        props: { initialArr, cards },
-    };
-};
-
-export default function QuizMulti({ initialArr, cards: initialCards }: Props) {
-    const [phase, setPhase] = useState<Phase>(
-        initialCards.length ? "learn" : "done"
-    );
-    const [cards, setCards] = useState<string[]>(initialCards);
-
+    const [phase, setPhase] = useState<Phase>("loading");
+    const [cards, setCards] = useState<string[]>([]);
+    const [initialArr, setInitialArr] = useState<string[]>([]);
 
     const [curr, setCurr] = useState(0);
     const [show, setShow] = useState(false);
     const [imgLoaded, setImgLoaded] = useState(false);
     const [wrongSet, setWrongSet] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (!router.isReady) return;
+        if (!initialsParam || !set) {
+            router.replace("/quiz");
+            return;
+        }
+
+        const initials = Array.isArray(initialsParam) ? initialsParam : [initialsParam];
+        setInitialArr(initials);
+
+        fetch(`/imageList-${set}.json`)
+            .then((res) => res.json())
+            .then((allFiles: string[]) => {
+                const filteredCards = shuffle(
+                    allFiles.filter((f) => {
+                        const ch = getChoseong(f.substring(f.lastIndexOf("/") + 1).replace(/\.(jpe?g|png)$/i, ""));
+                        return initials.includes(ch);
+                    })
+                );
+                setCards(filteredCards);
+                setPhase(filteredCards.length ? "learn" : "done");
+            });
+    }, [router.isReady, initialsParam, set, router]);
 
     const know = useCallback(() => {
         setShow(false);
@@ -109,6 +85,10 @@ export default function QuizMulti({ initialArr, cards: initialCards }: Props) {
         return () => window.removeEventListener("keydown", onKey);
     }, [phase, show, dont, know]);
 
+    if (phase === "loading") {
+        return <Center>퀴즈 로딩 중...</Center>;
+    }
+
     if (phase === "done") {
         const retryWrongSet = () => {
             if (wrongSet.length === 0) return;
@@ -116,8 +96,8 @@ export default function QuizMulti({ initialArr, cards: initialCards }: Props) {
             setCurr(0);
             setShow(false);
             setImgLoaded(false);
-            setWrongSet([]); // ★ 기존 오답 비우고 새롭게 다시 저장될 수 있게
-            setCards(shuffle([...wrongSet])); // ★ 오답만 카드로 설정
+            setWrongSet([]);
+            setCards(shuffle([...wrongSet]));
         };
 
         return (
@@ -128,7 +108,7 @@ export default function QuizMulti({ initialArr, cards: initialCards }: Props) {
                     </h1>
                     <ResultBlock title="오답 카드" list={wrongSet} onRetry={retryWrongSet} />
                     <Link
-                        href="/quiz"
+                        href={`/set/${set}`}
                         className="mt-4 px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800"
                     >
                         나가기
@@ -138,17 +118,15 @@ export default function QuizMulti({ initialArr, cards: initialCards }: Props) {
         );
     }
 
-
     const total = cards.length;
     const prog = curr + 1;
     const pct = (prog / total) * 100;
     const file = cards[curr];
-    const answer = file.replace(/\.(jpe?g|png)$/i, "");
+    const answer = file.substring(file.lastIndexOf("/") + 1).replace(/\.(jpe?g|png)$/i, "");
     const disabled = !imgLoaded;
 
     return (
         <div className="flex flex-col items-center justify-between min-h-screen p-4 bg-gray-50">
-            {/* 진행 바 */}
             <div className="w-full max-w-md mb-4">
                 <div className="flex justify-between mb-1 text-green-800">
                     <span>{prog} / {total}</span>
@@ -161,7 +139,6 @@ export default function QuizMulti({ initialArr, cards: initialCards }: Props) {
                 </div>
             </div>
 
-            {/* 카드 */}
             <Card
                 file={file}
                 answer={answer}
@@ -171,7 +148,6 @@ export default function QuizMulti({ initialArr, cards: initialCards }: Props) {
                 onToggle={() => setShow((s) => !s)}
             />
 
-            {/* 버튼 */}
             <Controls
                 show={show}
                 disabled={disabled}
@@ -182,7 +158,6 @@ export default function QuizMulti({ initialArr, cards: initialCards }: Props) {
         </div>
     );
 }
-
 
 const Center = ({ children }: { children: React.ReactNode }) => (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -213,15 +188,17 @@ function ResultBlock({
                 <>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {list.map((f) => {
-                            const label = f.replace(/\.(jpe?g|png)$/i, "");
+                            const label = f.substring(f.lastIndexOf("/") + 1).replace(/\.(jpe?g|png)$/i, "");
                             return (
                                 <div
                                     key={f}
                                     className="rounded-xl border shadow-sm bg-white/80 p-2"
                                 >
-                                    <img
+                                    <Image
                                         src={`/images/${f}`}
                                         alt={label}
+                                        width={400}
+                                        height={400}
                                         className="rounded object-contain h-32 w-full mx-auto"
                                         draggable={false}
                                     />
@@ -265,7 +242,6 @@ function Card({
             onClick={onToggle}
             className="w-full max-w-md lg:max-w-xl bg-white rounded-xl border-2
             border-green-100 shadow-md overflow-hidden cursor-pointer"
-
         >
             <div className="relative w-full aspect-square bg-gray-100">
                 {!loaded && <div className="absolute inset-0 animate-pulse bg-gray-200" />}
@@ -331,8 +307,7 @@ function Controls({
                 <button
                     onClick={reveal}
                     disabled={disabled}
-                    className={`w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg ${disabled ? "opacity-50" : ""
-                        }`}
+                    className={`w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg ${disabled ? "opacity-50" : ""}`}
                 >
                     정답 보기
                 </button>

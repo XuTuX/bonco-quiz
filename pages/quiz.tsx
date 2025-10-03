@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 // 선택 가능한 초성 배열
@@ -6,7 +6,14 @@ const initials = "ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ".split("");
 
 export default function QuizHome() {
     const router = useRouter();
+    const { set } = router.query;
     const [selected, setSelected] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (router.isReady && !set) {
+            router.replace('/');
+        }
+    }, [router.isReady, set]);
 
     // 초성 토글 선택/해제
     const toggle = (ch: string) => {
@@ -20,18 +27,25 @@ export default function QuizHome() {
     // 완료 시 선택된 초성으로 퀴즈 페이지 이동
     const startQuiz = () => {
         if (selected.length === 1) {
-            router.push(`/quiz/${selected[0]}`);
+            router.push(`/quiz/${selected[0]}?set=${set}`);
         } else {
             router.push({
                 pathname: "/quiz/multi/[initials]",
-                query: { initials: selected },   // ❗️ string[] 이어야 합니다
+                query: { initials: selected, set },
             });
         }
     };
 
+    if (!set) {
+        return <div className="min-h-screen flex items-center justify-center">로딩 중...</div>;
+    }
+
+    const setName = set === '1-1' ? '본1-1학기 2차수시' : '본1-2학기 1차수시';
+
     return (
         <main className="min-h-screen flex flex-col items-center bg-gray-50 p-10">
-            <h1 className="text-2xl font-bold mb-6">초성별 퀴즈 선택</h1>
+            <h1 className="text-2xl font-bold mb-2">{setName}</h1>
+            <h2 className="text-xl font-bold mb-6">초성별 퀴즈 선택</h2>
 
             <div className="grid grid-cols-6 gap-4 mb-6">
                 {initials.map(ch => (
