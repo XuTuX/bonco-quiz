@@ -1,5 +1,6 @@
 // pages/preview-1-1.tsx
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getChoseong } from "@/utils/hangul";
 
@@ -41,9 +42,11 @@ function PreviewGrid({ files }: { files: string[] }) {
                                 {label}
                             </span>
                         ) : (
-                            <img
+                            <Image
                                 src={`/images/${f}`}
                                 alt={label}
+                                width={500}
+                                height={500}
                                 className="object-contain max-h-full"
                                 loading="lazy"
                             />
