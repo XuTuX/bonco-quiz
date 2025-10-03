@@ -6,8 +6,8 @@ const imagesBaseDir = path.join(__dirname, '../public/images');
 const publicDir = path.join(__dirname, '../public');
 
 const dirMapping = {
-    '본1-1학기 2차수시': 'imageList-1-1.json',
-    '본1-2학기_1차수시': 'imageList-1-2.json'
+    '1-2': 'imageList-1-1.json',
+    '2-1': 'imageList-1-2.json'
 };
 
 // public/images 안의 모든 폴더를 읽음
@@ -43,7 +43,7 @@ subDirs.forEach(dir => {
             fs.renameSync(oldPath, newPath);
             console.log(`🔄 rename: ${oldName} → ${nfcName}`);
         }
-        
+
         // dir/image.jpeg 형식으로 저장
         imagePaths.push(`${dir}/${nfcName}`);
     });
