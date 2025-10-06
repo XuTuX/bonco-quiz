@@ -286,10 +286,17 @@ function Card({
                         />
                     </motion.div>
                 </AnimatePresence>
-            </div>
-            <div className="p-4 h-12 flex items-center justify-center">
                 {show && (
-                    <span className="text-xl font-semibold text-blue-600">
+                    <div className="absolute inset-x-0 bottom-0 z-10 flex justify-center p-3 md:hidden">
+                        <span className="w-full rounded-lg bg-white/95 text-center text-lg font-semibold leading-tight text-blue-600 shadow-sm backdrop-blur-sm">
+                            정답: {answer}
+                        </span>
+                    </div>
+                )}
+            </div>
+            <div className="hidden md:flex p-4 min-h-[3rem] items-center justify-center bg-white">
+                {show && (
+                    <span className="block text-center text-xl font-semibold leading-tight text-blue-600">
                         정답: {answer}
                     </span>
                 )}
