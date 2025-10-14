@@ -26,13 +26,11 @@ export default function QuizHome() {
 
     // 완료 시 선택된 초성으로 퀴즈 페이지 이동
     const startQuiz = () => {
+        if (selected.length === 0) return;
         if (selected.length === 1) {
             router.push(`/quiz/${selected[0]}?set=${set}`);
         } else {
-            router.push({
-                pathname: "/quiz/multi/[initials]",
-                query: { initials: selected, set },
-            });
+            router.push(`/quiz/multi/${selected.join('')}?set=${set}`);
         }
     };
 

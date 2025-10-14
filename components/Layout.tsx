@@ -32,6 +32,13 @@ export default function Layout({ children }: { children: ReactNode }) {
                 </button>
             </header>
 
+            {/* 홍보 배너 */}
+            <div className="bg-yellow-200 text-center p-2 text-sm text-gray-800">
+                <a href="https://www.quizpick.org" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-600">
+                    시험공부에 ai를 활용한 퀴즈로 하고 싶다면?
+                </a>
+            </div>
+
             {/* 본문 */}
             <main className="p-4">
                 {children}

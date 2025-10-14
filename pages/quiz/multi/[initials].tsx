@@ -32,7 +32,7 @@ export default function QuizMulti() {
             return;
         }
 
-        const initials = Array.isArray(initialsParam) ? initialsParam : [initialsParam];
+        const initials = (initialsParam as string).split('');
         setInitialArr(initials);
 
         fetch(`/imageList-${set}.json`)
@@ -123,7 +123,7 @@ export default function QuizMulti() {
     const disabled = !imgLoaded;
 
     return (
-        <div className="flex flex-col items-center justify-between min-h-screen p-4 bg-gray-50">
+        <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-50 gap-4">
             <div className="w-full max-w-md mb-4">
                 <div className="flex justify-between mb-1 text-green-800">
                     <span>{prog} / {total}</span>
@@ -236,35 +236,42 @@ function Card({
 }) {
     return (
         <div
-            onClick={onToggle}
             className="w-full max-w-md lg:max-w-xl bg-white rounded-xl border-2
-            border-green-100 shadow-md overflow-hidden cursor-pointer"
+                 border-green-100 shadow-md overflow-hidden cursor-pointer
+                 flex flex-col flex-grow" // Added flex and flex-grow
+            onClick={onToggle}
         >
-            <div className="relative w-full aspect-square bg-gray-100">
-                {!loaded && <div className="absolute inset-0 animate-pulse bg-gray-200" />}
+            {/* Make this container relative for the image */}
+            <div className="relative flex-grow">
                 <AnimatePresence mode="wait">
                     <motion.div
-                        key={file}
-                        initial={{ scale: 0.98 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0.98 }}
-                        transition={{ duration: 0.15 }}
+                        key={file} // Animate when file changes
                         className="absolute inset-0 flex items-center justify-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
                     >
                         <Image
                             src={`/images/${file}`}
                             alt=""
                             width={500}
                             height={500}
-                            loading="lazy"
-                            className="object-contain max-h-[90vh]"
+                            priority
+                            className="w-auto h-auto object-contain max-w-full max-h-full"
                             onLoadingComplete={onLoad}
                         />
                     </motion.div>
                 </AnimatePresence>
+                {!loaded && <div className="absolute inset-0 animate-pulse bg-gray-200" />}
             </div>
-            <div className="p-4 h-12 flex items-center justify-center">
-                {show && <span className="text-xl font-semibold text-blue-600">정답: {answer}</span>}
+            {/* Explicit height for the answer bar */}
+            <div className="p-4 h-20 flex-shrink-0 flex items-center justify-center">
+                {show && (
+                    <span className="text-xl font-semibold text-blue-600">
+                        정답: {answer}
+                    </span>
+                )}
             </div>
         </div>
     );
