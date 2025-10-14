@@ -33,9 +33,9 @@ export default function Layout({ children }: { children: ReactNode }) {
             </header>
 
             {/* 홍보 배너 */}
-            <div className="bg-yellow-200 text-center p-2 text-sm text-gray-800">
-                <a href="https://www.quizpick.org" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-600">
-                    시험공부에 ai를 활용한 퀴즈로 하고 싶다면?
+            <div className="bg-gradient-to-r from-blue-100 to-teal-100 p-3 text-center shadow-sm">
+                <a href="https://www.quizpick.org" target="_blank" rel="noopener noreferrer" className="font-semibold text-gray-700 hover:text-blue-700 transition-colors">
+                    ✨ 시험공부에 AI를 활용한 퀴즈로 하고 싶다면?
                 </a>
             </div>
 
