@@ -6,6 +6,7 @@ import shuffle from "@/utils/shuffle";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
+import ImagePreloader from "@/components/ImagePreloader";
 
 type Phase = "loading" | "learn" | "done";
 
@@ -119,8 +120,12 @@ export default function QuizByInitial() {
     const answer = file.substring(file.lastIndexOf("/") + 1).replace(/\\.(jp(e?)g|png)$/i, "");
     const disabled = !imgLoaded;
 
+    // Preload the next image
+    const nextImage = curr + 1 < cards.length ? `/images/${cards[curr + 1]}` : '';
+
     return (
         <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-50 gap-4">
+            <ImagePreloader href={nextImage} />
             <div className="w-full max-w-md mb-4">
                 <div className="flex justify-between mb-1 font-medium text-green-800">
                     <span>{prog} / {total}</span>
