@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getChoseong } from "@/utils/hangul";
+import { imageMap } from "@/utils/imageMap";
 
 /* ────────── 작은 컴포넌트들 ────────── */
 
@@ -43,12 +44,11 @@ function PreviewGrid({ files }: { files: string[] }) {
                             </span>
                         ) : (
                             <Image
-                                src={`/images/${f}`}
+                                src={imageMap[f]}
                                 alt={label}
-                                width={500}
-                                height={500}
-                                className="object-contain max-h-full"
-                                loading="lazy"
+                                className="object-contain max-h-full w-auto h-auto"
+                                sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
+                                placeholder="blur"
                             />
                         )}
                     </div>

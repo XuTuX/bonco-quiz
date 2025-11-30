@@ -8,6 +8,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 type Phase = 'learn' | 'batch-done' | 'all-done';
 type BatchChoice = number | 'all';
 
+const BLUR_DATA_URL =
+    'data:image/gif;base64,R0lGODlhAQABAPAAAMzMzP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==';
+
 // 배열을 무작위로 섞는 헬퍼
 function shuffle<T>(arr: T[]) {
     const a = [...arr];
@@ -227,6 +230,7 @@ export default function Learn() {
                 answer={answer}
                 show={show}
                 loaded={imgLoaded}
+                isFirst={curr === 0}
                 onLoad={() => setImgLoaded(true)}
             />
 
@@ -255,12 +259,14 @@ function Card({
     show,
     loaded,
     onLoad,
+    isFirst,
 }: {
     file: string;
     answer: string;
     show: boolean;
     loaded: boolean;
     onLoad: () => void;
+    isFirst: boolean;
 }) {
     return (
         <div className="w-full max-w-md lg:max-w-2xl xl:max-w-2xl bg-white rounded-xl border-2 border-green-100 shadow-md overflow-hidden">
@@ -280,7 +286,10 @@ function Card({
                             alt=""
                             width={600}
                             height={600}
-                            priority
+                            sizes="(max-width: 768px) 90vw, (max-width: 1280px) 60vw, 600px"
+                            priority={isFirst}
+                            placeholder="blur"
+                            blurDataURL={BLUR_DATA_URL}
                             className="object-contain max-h-[70vh]"
                             onLoadingComplete={onLoad}
                         />
@@ -335,8 +344,10 @@ function GridResultBlock({
                                 alt={label}
                                 width={400}
                                 height={400}
+                                sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 200px"
                                 className="object-contain h-32 w-full"
-                                priority
+                                placeholder="blur"
+                                blurDataURL={BLUR_DATA_URL}
                             />
                             <p className="text-center font-semibold mt-2">{label}</p>
                         </div>

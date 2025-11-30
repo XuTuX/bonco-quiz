@@ -9,6 +9,9 @@ import { useState, useEffect, useCallback } from "react";
 
 type Phase = "loading" | "learn" | "done";
 
+const BLUR_DATA_URL =
+    "data:image/gif;base64,R0lGODlhAQABAPAAAMzMzP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
+
 export default function QuizByInitial() {
     const router = useRouter();
     const { initial, set } = router.query;
@@ -135,6 +138,7 @@ export default function QuizByInitial() {
                 answer={answer}
                 show={show}
                 loaded={imgLoaded}
+                isFirst={curr === 0}
                 onLoad={() => setImgLoaded(true)}
                 onToggle={() => setShow(!show)}
             />
@@ -190,7 +194,10 @@ function ResultBlock({
                                         alt={label}
                                         width={400}
                                         height={400}
+                                        sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 200px"
                                         className="rounded object-contain h-32 w-full mx-auto"
+                                        placeholder="blur"
+                                        blurDataURL={BLUR_DATA_URL}
                                         draggable={false}
                                     />
                                     <p className="text-center font-semibold mt-2">{label}</p>
@@ -221,6 +228,7 @@ function Card({
     loaded,
     onLoad,
     onToggle,
+    isFirst,
 }: {
     file: string;
     answer: string;
@@ -228,6 +236,7 @@ function Card({
     loaded: boolean;
     onLoad: () => void;
     onToggle: () => void;
+    isFirst: boolean;
 }) {
     return (
         <div
@@ -252,7 +261,10 @@ function Card({
                             alt=""
                             width={500}
                             height={500}
-                            priority
+                            sizes="(max-width: 768px) 90vw, (max-width: 1200px) 70vw, 500px"
+                            priority={isFirst}
+                            placeholder="blur"
+                            blurDataURL={BLUR_DATA_URL}
                             className="w-auto h-auto object-contain max-w-full max-h-full"
                             onLoadingComplete={onLoad}
                         />

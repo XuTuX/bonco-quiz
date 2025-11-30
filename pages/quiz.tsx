@@ -3,6 +3,11 @@ import { useRouter } from "next/router";
 
 // 선택 가능한 초성 배열
 const initials = "ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ".split("");
+const SET_NAME: Record<string, string> = {
+    "1-1": "본1-1학기 2차수시",
+    "1-2": "본1-2학기 1차수시",
+    "1-3": "본초 세트 1-3 (NFC)",
+};
 
 export default function QuizHome() {
     const router = useRouter();
@@ -38,7 +43,7 @@ export default function QuizHome() {
         return <div className="min-h-screen flex items-center justify-center">로딩 중...</div>;
     }
 
-    const setName = set === '1-1' ? '본1-1학기 2차수시' : '본1-2학기 1차수시';
+    const setName = SET_NAME[set as string] ?? '선택된 세트';
 
     return (
         <main className="min-h-screen flex flex-col items-center bg-gray-50 p-10">

@@ -4,6 +4,9 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getChoseong } from "@/utils/hangul";
 
+const BLUR_DATA_URL =
+    "data:image/gif;base64,R0lGODlhAQABAPAAAMzMzP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
+
 /* ────────── 작은 컴포넌트들 ────────── */
 
 /** 썸네일 ↔ 라벨 토글 그리드 */
@@ -48,6 +51,9 @@ function PreviewGrid({ files }: { files: string[] }) {
                                 width={500}
                                 height={500}
                                 className="object-contain max-h-full"
+                                sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
+                                placeholder="blur"
+                                blurDataURL={BLUR_DATA_URL}
                                 loading="lazy"
                             />
                         )}
