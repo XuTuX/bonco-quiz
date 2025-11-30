@@ -74,7 +74,6 @@ subDirs.forEach(dir => {
 
     // JSON 작성 (기존 호환성 유지)
     fs.writeFileSync(jsonPath, JSON.stringify(imagePaths, null, 2), 'utf-8');
-    console.log(`✅ ${jsonFileName} (NFC) 생성 완료`);
 });
 
 // Generate utils/imageMap.ts
