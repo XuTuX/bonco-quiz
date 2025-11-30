@@ -18,7 +18,7 @@ async function compressImage(inputPath, outputPath) {
         const originalSize = stats.size;
 
         await sharp(inputPath)
-            .jpeg({ quality: 80, progressive: true }) // JPEG 품질 80%로 압축
+            .jpeg({ quality: 60, progressive: true }) // JPEG 품질 60%로 압축
             .toFile(outputPath);
 
         const newStats = fs.statSync(outputPath);
