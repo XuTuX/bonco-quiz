@@ -276,14 +276,14 @@ function Card({
                     </motion.div>
                 </AnimatePresence>
                 {!loaded && <div className="absolute inset-0 animate-pulse bg-gray-200" />}
-            </div>
-            {/* Explicit height for the answer bar */}
-            <div className="p-4 h-20 flex-shrink-0 flex items-center justify-center">
-                {show && (
-                    <span className="text-xl font-semibold text-blue-600">
-                        정답: {answer}
-                    </span>
-                )}
+                {/* Answer bar positioned absolutely over the image for md and larger screens */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 h-20 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+                    {show && (
+                        <span className="text-xl font-semibold text-blue-600">
+                            정답: {answer}
+                        </span>
+                    )}
+                </div>
             </div>
         </div>
     );
