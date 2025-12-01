@@ -251,86 +251,84 @@ import img_246 from "../public/images/2-2/마황근.jpeg";
 import img_247 from "../public/images/2-2/맥문동.jpeg";
 import img_248 from "../public/images/2-2/모려.jpeg";
 import img_249 from "../public/images/2-2/목근피.jpeg";
-import img_250 from "../public/images/2-2/반묘.jpeg";
-import img_251 from "../public/images/2-2/백강잠.jpeg";
-import img_252 from "../public/images/2-2/백반.jpeg";
-import img_253 from "../public/images/2-2/백작약.jpeg";
-import img_254 from "../public/images/2-2/백질려.jpeg";
-import img_255 from "../public/images/2-2/백출.jpeg";
-import img_256 from "../public/images/2-2/백편두.jpeg";
-import img_257 from "../public/images/2-2/백합.jpeg";
-import img_258 from "../public/images/2-2/별갑.jpeg";
-import img_259 from "../public/images/2-2/보골지.jpeg";
-import img_260 from "../public/images/2-2/복분자.jpeg";
-import img_261 from "../public/images/2-2/봉밀.jpeg";
-import img_262 from "../public/images/2-2/부소맥.jpeg";
-import img_263 from "../public/images/2-2/붕사.jpeg";
-import img_264 from "../public/images/2-2/비석.jpeg";
-import img_265 from "../public/images/2-2/빙편.jpeg";
-import img_266 from "../public/images/2-2/사삼.jpeg";
-import img_267 from "../public/images/2-2/사상자.jpeg";
-import img_268 from "../public/images/2-2/사원질려.jpeg";
-import img_269 from "../public/images/2-2/사향.jpeg";
-import img_270 from "../public/images/2-2/산수유.jpeg";
-import img_271 from "../public/images/2-2/산약.jpeg";
-import img_272 from "../public/images/2-2/상산.jpeg";
-import img_273 from "../public/images/2-2/상심자.jpeg";
-import img_274 from "../public/images/2-2/상표초.jpeg";
-import img_275 from "../public/images/2-2/석결명.jpeg";
-import img_276 from "../public/images/2-2/석곡.jpeg";
-import img_277 from "../public/images/2-2/석류피.jpeg";
-import img_278 from "../public/images/2-2/석창포.jpeg";
-import img_279 from "../public/images/2-2/선모.jpeg";
-import img_280 from "../public/images/2-2/섬수.jpeg";
-import img_281 from "../public/images/2-2/소합향.jpeg";
-import img_282 from "../public/images/2-2/속단.jpeg";
-import img_283 from "../public/images/2-2/쇄양.jpeg";
-import img_284 from "../public/images/2-2/숙지황.jpeg";
-import img_285 from "../public/images/2-2/아교.jpeg";
-import img_286 from "../public/images/2-2/안식향.jpeg";
-import img_287 from "../public/images/2-2/양기석.jpeg";
-import img_288 from "../public/images/2-2/여로.jpeg";
-import img_289 from "../public/images/2-2/여정자.jpeg";
-import img_290 from "../public/images/2-2/연자육.jpeg";
-import img_291 from "../public/images/2-2/연탄.jpeg";
-import img_292 from "../public/images/2-2/영양각.jpeg";
-import img_293 from "../public/images/2-2/오공.jpeg";
-import img_294 from "../public/images/2-2/오매.jpeg";
-import img_295 from "../public/images/2-2/오미자.jpeg";
-import img_296 from "../public/images/2-2/오배자.jpeg";
-import img_297 from "../public/images/2-2/옥죽.jpeg";
-import img_298 from "../public/images/2-2/용안육.jpeg";
-import img_299 from "../public/images/2-2/우여량.jpeg";
-import img_300 from "../public/images/2-2/웅황.jpeg";
-import img_301 from "../public/images/2-2/유황.jpeg";
-import img_302 from "../public/images/2-2/육두구.jpeg";
-import img_303 from "../public/images/2-2/육종용.jpeg";
-import img_304 from "../public/images/2-2/음양곽.jpeg";
-import img_305 from "../public/images/2-2/익지인.jpeg";
-import img_306 from "../public/images/2-2/인삼.jpeg";
-import img_307 from "../public/images/2-2/자하거.jpeg";
-import img_308 from "../public/images/2-2/장뇌.jpeg";
-import img_309 from "../public/images/2-2/저실자.jpeg";
-import img_310 from "../public/images/2-2/적석지.jpeg";
-import img_311 from "../public/images/2-2/전갈.jpeg";
-import img_312 from "../public/images/2-2/조구등.jpeg";
-import img_313 from "../public/images/2-2/진주.jpeg";
-import img_314 from "../public/images/2-2/천마.jpeg";
-import img_315 from "../public/images/2-2/천문동.jpeg";
-import img_316 from "../public/images/2-2/춘피.jpeg";
-import img_317 from "../public/images/2-2/토사자.jpeg";
-import img_318 from "../public/images/2-2/파극천.jpeg";
-import img_319 from "../public/images/2-2/하수오.jpeg";
-import img_320 from "../public/images/2-2/한련초.jpeg";
-import img_321 from "../public/images/2-2/합개.jpeg";
-import img_322 from "../public/images/2-2/해구신.jpeg";
-import img_323 from "../public/images/2-2/해마.jpeg";
-import img_324 from "../public/images/2-2/해표초.jpeg";
-import img_325 from "../public/images/2-2/호도인.jpeg";
-import img_326 from "../public/images/2-2/호로퍄.jpeg";
-import img_327 from "../public/images/2-2/황기.jpeg";
-import img_328 from "../public/images/2-2/황정.jpeg";
-import img_329 from "../public/images/2-2/흑지마.jpeg";
+import img_250 from "../public/images/2-2/백강잠.jpeg";
+import img_251 from "../public/images/2-2/백반.jpeg";
+import img_252 from "../public/images/2-2/백작약.jpeg";
+import img_253 from "../public/images/2-2/백질려.jpeg";
+import img_254 from "../public/images/2-2/백출.jpeg";
+import img_255 from "../public/images/2-2/백편두.jpeg";
+import img_256 from "../public/images/2-2/백합.jpeg";
+import img_257 from "../public/images/2-2/별갑.jpeg";
+import img_258 from "../public/images/2-2/보골지.jpeg";
+import img_259 from "../public/images/2-2/복분자.jpeg";
+import img_260 from "../public/images/2-2/봉밀.jpeg";
+import img_261 from "../public/images/2-2/부소맥.jpeg";
+import img_262 from "../public/images/2-2/붕사.jpeg";
+import img_263 from "../public/images/2-2/비석.jpeg";
+import img_264 from "../public/images/2-2/빙편.jpeg";
+import img_265 from "../public/images/2-2/사삼.jpeg";
+import img_266 from "../public/images/2-2/사상자.jpeg";
+import img_267 from "../public/images/2-2/사원질려.jpeg";
+import img_268 from "../public/images/2-2/산수유.jpeg";
+import img_269 from "../public/images/2-2/산약.jpeg";
+import img_270 from "../public/images/2-2/상산.jpeg";
+import img_271 from "../public/images/2-2/상심자.jpeg";
+import img_272 from "../public/images/2-2/상표초.jpeg";
+import img_273 from "../public/images/2-2/석결명.jpeg";
+import img_274 from "../public/images/2-2/석곡.jpeg";
+import img_275 from "../public/images/2-2/석류피.jpeg";
+import img_276 from "../public/images/2-2/석창포.jpeg";
+import img_277 from "../public/images/2-2/선모.jpeg";
+import img_278 from "../public/images/2-2/섬수.jpeg";
+import img_279 from "../public/images/2-2/소합향.jpeg";
+import img_280 from "../public/images/2-2/속단.jpeg";
+import img_281 from "../public/images/2-2/쇄양.jpeg";
+import img_282 from "../public/images/2-2/숙지황.jpeg";
+import img_283 from "../public/images/2-2/아교.jpeg";
+import img_284 from "../public/images/2-2/안식향.jpeg";
+import img_285 from "../public/images/2-2/양기석.jpeg";
+import img_286 from "../public/images/2-2/여로.jpeg";
+import img_287 from "../public/images/2-2/여정자.jpeg";
+import img_288 from "../public/images/2-2/연자육.jpeg";
+import img_289 from "../public/images/2-2/연탄.jpeg";
+import img_290 from "../public/images/2-2/영양각.jpeg";
+import img_291 from "../public/images/2-2/오공.jpeg";
+import img_292 from "../public/images/2-2/오매.jpeg";
+import img_293 from "../public/images/2-2/오미자.jpeg";
+import img_294 from "../public/images/2-2/오배자.jpeg";
+import img_295 from "../public/images/2-2/옥죽.jpeg";
+import img_296 from "../public/images/2-2/용안육.jpeg";
+import img_297 from "../public/images/2-2/우여량.jpeg";
+import img_298 from "../public/images/2-2/웅황.jpeg";
+import img_299 from "../public/images/2-2/유황.jpeg";
+import img_300 from "../public/images/2-2/육두구.jpeg";
+import img_301 from "../public/images/2-2/육종용.jpeg";
+import img_302 from "../public/images/2-2/음양곽.jpeg";
+import img_303 from "../public/images/2-2/익지인.jpeg";
+import img_304 from "../public/images/2-2/인삼.jpeg";
+import img_305 from "../public/images/2-2/자하거.jpeg";
+import img_306 from "../public/images/2-2/장뇌.jpeg";
+import img_307 from "../public/images/2-2/저실자.jpeg";
+import img_308 from "../public/images/2-2/적석지.jpeg";
+import img_309 from "../public/images/2-2/전갈.jpeg";
+import img_310 from "../public/images/2-2/조구등.jpeg";
+import img_311 from "../public/images/2-2/진주.jpeg";
+import img_312 from "../public/images/2-2/천마.jpeg";
+import img_313 from "../public/images/2-2/천문동.jpeg";
+import img_314 from "../public/images/2-2/춘피.jpeg";
+import img_315 from "../public/images/2-2/토사자.jpeg";
+import img_316 from "../public/images/2-2/파극천.jpeg";
+import img_317 from "../public/images/2-2/하수오.jpeg";
+import img_318 from "../public/images/2-2/한련초.jpeg";
+import img_319 from "../public/images/2-2/합개.jpeg";
+import img_320 from "../public/images/2-2/해구신.jpeg";
+import img_321 from "../public/images/2-2/해마.jpeg";
+import img_322 from "../public/images/2-2/해표초.jpeg";
+import img_323 from "../public/images/2-2/호도인.jpeg";
+import img_324 from "../public/images/2-2/호로퍄.jpeg";
+import img_325 from "../public/images/2-2/황기.jpeg";
+import img_326 from "../public/images/2-2/황정.jpeg";
+import img_327 from "../public/images/2-2/흑지마.jpeg";
 
 export const imageMap: Record<string, any> = {
   "1-2/감송향.jpeg": img_0,
@@ -583,84 +581,82 @@ export const imageMap: Record<string, any> = {
   "2-2/맥문동.jpeg": img_247,
   "2-2/모려.jpeg": img_248,
   "2-2/목근피.jpeg": img_249,
-  "2-2/반묘.jpeg": img_250,
-  "2-2/백강잠.jpeg": img_251,
-  "2-2/백반.jpeg": img_252,
-  "2-2/백작약.jpeg": img_253,
-  "2-2/백질려.jpeg": img_254,
-  "2-2/백출.jpeg": img_255,
-  "2-2/백편두.jpeg": img_256,
-  "2-2/백합.jpeg": img_257,
-  "2-2/별갑.jpeg": img_258,
-  "2-2/보골지.jpeg": img_259,
-  "2-2/복분자.jpeg": img_260,
-  "2-2/봉밀.jpeg": img_261,
-  "2-2/부소맥.jpeg": img_262,
-  "2-2/붕사.jpeg": img_263,
-  "2-2/비석.jpeg": img_264,
-  "2-2/빙편.jpeg": img_265,
-  "2-2/사삼.jpeg": img_266,
-  "2-2/사상자.jpeg": img_267,
-  "2-2/사원질려.jpeg": img_268,
-  "2-2/사향.jpeg": img_269,
-  "2-2/산수유.jpeg": img_270,
-  "2-2/산약.jpeg": img_271,
-  "2-2/상산.jpeg": img_272,
-  "2-2/상심자.jpeg": img_273,
-  "2-2/상표초.jpeg": img_274,
-  "2-2/석결명.jpeg": img_275,
-  "2-2/석곡.jpeg": img_276,
-  "2-2/석류피.jpeg": img_277,
-  "2-2/석창포.jpeg": img_278,
-  "2-2/선모.jpeg": img_279,
-  "2-2/섬수.jpeg": img_280,
-  "2-2/소합향.jpeg": img_281,
-  "2-2/속단.jpeg": img_282,
-  "2-2/쇄양.jpeg": img_283,
-  "2-2/숙지황.jpeg": img_284,
-  "2-2/아교.jpeg": img_285,
-  "2-2/안식향.jpeg": img_286,
-  "2-2/양기석.jpeg": img_287,
-  "2-2/여로.jpeg": img_288,
-  "2-2/여정자.jpeg": img_289,
-  "2-2/연자육.jpeg": img_290,
-  "2-2/연탄.jpeg": img_291,
-  "2-2/영양각.jpeg": img_292,
-  "2-2/오공.jpeg": img_293,
-  "2-2/오매.jpeg": img_294,
-  "2-2/오미자.jpeg": img_295,
-  "2-2/오배자.jpeg": img_296,
-  "2-2/옥죽.jpeg": img_297,
-  "2-2/용안육.jpeg": img_298,
-  "2-2/우여량.jpeg": img_299,
-  "2-2/웅황.jpeg": img_300,
-  "2-2/유황.jpeg": img_301,
-  "2-2/육두구.jpeg": img_302,
-  "2-2/육종용.jpeg": img_303,
-  "2-2/음양곽.jpeg": img_304,
-  "2-2/익지인.jpeg": img_305,
-  "2-2/인삼.jpeg": img_306,
-  "2-2/자하거.jpeg": img_307,
-  "2-2/장뇌.jpeg": img_308,
-  "2-2/저실자.jpeg": img_309,
-  "2-2/적석지.jpeg": img_310,
-  "2-2/전갈.jpeg": img_311,
-  "2-2/조구등.jpeg": img_312,
-  "2-2/진주.jpeg": img_313,
-  "2-2/천마.jpeg": img_314,
-  "2-2/천문동.jpeg": img_315,
-  "2-2/춘피.jpeg": img_316,
-  "2-2/토사자.jpeg": img_317,
-  "2-2/파극천.jpeg": img_318,
-  "2-2/하수오.jpeg": img_319,
-  "2-2/한련초.jpeg": img_320,
-  "2-2/합개.jpeg": img_321,
-  "2-2/해구신.jpeg": img_322,
-  "2-2/해마.jpeg": img_323,
-  "2-2/해표초.jpeg": img_324,
-  "2-2/호도인.jpeg": img_325,
-  "2-2/호로퍄.jpeg": img_326,
-  "2-2/황기.jpeg": img_327,
-  "2-2/황정.jpeg": img_328,
-  "2-2/흑지마.jpeg": img_329,
+  "2-2/백강잠.jpeg": img_250,
+  "2-2/백반.jpeg": img_251,
+  "2-2/백작약.jpeg": img_252,
+  "2-2/백질려.jpeg": img_253,
+  "2-2/백출.jpeg": img_254,
+  "2-2/백편두.jpeg": img_255,
+  "2-2/백합.jpeg": img_256,
+  "2-2/별갑.jpeg": img_257,
+  "2-2/보골지.jpeg": img_258,
+  "2-2/복분자.jpeg": img_259,
+  "2-2/봉밀.jpeg": img_260,
+  "2-2/부소맥.jpeg": img_261,
+  "2-2/붕사.jpeg": img_262,
+  "2-2/비석.jpeg": img_263,
+  "2-2/빙편.jpeg": img_264,
+  "2-2/사삼.jpeg": img_265,
+  "2-2/사상자.jpeg": img_266,
+  "2-2/사원질려.jpeg": img_267,
+  "2-2/산수유.jpeg": img_268,
+  "2-2/산약.jpeg": img_269,
+  "2-2/상산.jpeg": img_270,
+  "2-2/상심자.jpeg": img_271,
+  "2-2/상표초.jpeg": img_272,
+  "2-2/석결명.jpeg": img_273,
+  "2-2/석곡.jpeg": img_274,
+  "2-2/석류피.jpeg": img_275,
+  "2-2/석창포.jpeg": img_276,
+  "2-2/선모.jpeg": img_277,
+  "2-2/섬수.jpeg": img_278,
+  "2-2/소합향.jpeg": img_279,
+  "2-2/속단.jpeg": img_280,
+  "2-2/쇄양.jpeg": img_281,
+  "2-2/숙지황.jpeg": img_282,
+  "2-2/아교.jpeg": img_283,
+  "2-2/안식향.jpeg": img_284,
+  "2-2/양기석.jpeg": img_285,
+  "2-2/여로.jpeg": img_286,
+  "2-2/여정자.jpeg": img_287,
+  "2-2/연자육.jpeg": img_288,
+  "2-2/연탄.jpeg": img_289,
+  "2-2/영양각.jpeg": img_290,
+  "2-2/오공.jpeg": img_291,
+  "2-2/오매.jpeg": img_292,
+  "2-2/오미자.jpeg": img_293,
+  "2-2/오배자.jpeg": img_294,
+  "2-2/옥죽.jpeg": img_295,
+  "2-2/용안육.jpeg": img_296,
+  "2-2/우여량.jpeg": img_297,
+  "2-2/웅황.jpeg": img_298,
+  "2-2/유황.jpeg": img_299,
+  "2-2/육두구.jpeg": img_300,
+  "2-2/육종용.jpeg": img_301,
+  "2-2/음양곽.jpeg": img_302,
+  "2-2/익지인.jpeg": img_303,
+  "2-2/인삼.jpeg": img_304,
+  "2-2/자하거.jpeg": img_305,
+  "2-2/장뇌.jpeg": img_306,
+  "2-2/저실자.jpeg": img_307,
+  "2-2/적석지.jpeg": img_308,
+  "2-2/전갈.jpeg": img_309,
+  "2-2/조구등.jpeg": img_310,
+  "2-2/진주.jpeg": img_311,
+  "2-2/천마.jpeg": img_312,
+  "2-2/천문동.jpeg": img_313,
+  "2-2/춘피.jpeg": img_314,
+  "2-2/토사자.jpeg": img_315,
+  "2-2/파극천.jpeg": img_316,
+  "2-2/하수오.jpeg": img_317,
+  "2-2/한련초.jpeg": img_318,
+  "2-2/합개.jpeg": img_319,
+  "2-2/해구신.jpeg": img_320,
+  "2-2/해마.jpeg": img_321,
+  "2-2/해표초.jpeg": img_322,
+  "2-2/호도인.jpeg": img_323,
+  "2-2/호로퍄.jpeg": img_324,
+  "2-2/황기.jpeg": img_325,
+  "2-2/황정.jpeg": img_326,
+  "2-2/흑지마.jpeg": img_327,
 };
