@@ -8,9 +8,6 @@ interface PreviewGridProps {
     useImageMap?: boolean;
 }
 
-const BLUR_DATA_URL =
-    "data:image/gif;base64,R0lGODlhAQABAPAAAMzMzP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
-
 export default function PreviewGrid({ files, useImageMap = false }: PreviewGridProps) {
     const [flipped, setFlipped] = useState<Set<string>>(new Set());
 
