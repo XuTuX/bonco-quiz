@@ -54,7 +54,7 @@ export default function PreviewGrid({ files, useImageMap = false }: PreviewGridP
                             initial={false}
                             animate={{ rotateY: isFlipped ? 180 : 0 }}
                             transition={{ duration: 0.6, type: "spring", stiffness: 260, damping: 20 }}
-                            style={{ transformStyle: "preserve-3d" }}
+                            style={{ transformStyle: "preserve-3d", willChange: "transform" }}
                         >
                             {/* Front Face (Image) */}
                             <div
@@ -68,7 +68,7 @@ export default function PreviewGrid({ files, useImageMap = false }: PreviewGridP
                                         fill
                                         className="object-contain p-6"
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                        placeholder="blur"
+                                        placeholder="empty"
                                     />
                                 ) : (
                                     <div className="flex items-center justify-center h-full text-gray-400">No Image</div>
