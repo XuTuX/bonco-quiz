@@ -25,7 +25,7 @@ const SET_META: Record<
   '1-3': {
     title: '본1-2학기 2차수시',
     previewPath: '/preview-1-3',
-    desc: '총 114개의 본초 이미지',
+    desc: '총 101개의 본초 이미지',
   },
 };
 
@@ -89,8 +89,8 @@ export default function SetHubPage() {
                   key={n}
                   onClick={() => setBatchChoice(n)}
                   className={`px-4 py-2 rounded-lg font-semibold transition-all ${batchChoice === n
-                      ? 'bg-blue-500 text-white shadow-md scale-105'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-blue-500 text-white shadow-md scale-105'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                 >
                   {n === 'all' ? '전체' : `${n}개`}
