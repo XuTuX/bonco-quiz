@@ -1,7 +1,7 @@
 // pages/quiz/multi/[initials].tsx
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -24,6 +24,7 @@ export default function QuizMulti() {
     const [phase, setPhase] = useState<Phase>("loading");
     const [cards, setCards] = useState<string[]>([]);
     const [initialArr, setInitialArr] = useState<string[]>([]);
+    const [resetKey, setResetKey] = useState(0);
 
     const [curr, setCurr] = useState(0);
     const [show, setShow] = useState(false);
@@ -122,7 +123,9 @@ export default function QuizMulti() {
                     setShow(false);
                     setImgLoaded(false);
                     setWrongSet([]);
+                    setWrongSet([]);
                     setPhase("learn");
+                    setResetKey((k) => k + 1);
                 });
         };
 
@@ -178,6 +181,8 @@ export default function QuizMulti() {
                 setShow(false);
                 setImgLoaded(false);
                 setWrongSet([]);
+                setWrongSet([]);
+                setResetKey((k) => k + 1);
             });
     };
 
@@ -214,6 +219,7 @@ export default function QuizMulti() {
                 isFirst={curr === 0}
                 onLoad={() => setImgLoaded(true)}
                 onToggle={() => setShow((s) => !s)}
+                resetKey={resetKey}
             />
 
             <Controls
@@ -301,6 +307,7 @@ function Card({
     onLoad,
     onToggle,
     isFirst,
+    resetKey,
 }: {
     file: string;
     answer: string;
@@ -309,7 +316,14 @@ function Card({
     onLoad: () => void;
     onToggle: () => void;
     isFirst: boolean;
+    resetKey: number;
 }) {
+    const rotation = useMemo(() => {
+        const angles = [0, 90, 180, 270];
+        const hash = Array.from(file).reduce((acc, char) => acc + char.charCodeAt(0), resetKey);
+        return angles[hash % angles.length];
+    }, [file, resetKey]);
+
     return (
         <div
             className="w-full max-w-md lg:max-w-xl bg-white rounded-xl border-2
@@ -321,7 +335,7 @@ function Card({
             <div className="relative flex-grow">
                 <AnimatePresence mode="wait">
                     <motion.div
-                        key={file} // Animate when file changes
+                        key={`${file}-${resetKey}`} // Animate when file or resetKey changes
                         className="absolute inset-0 flex items-center justify-center"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -338,6 +352,7 @@ function Card({
                             placeholder="blur"
                             blurDataURL={BLUR_DATA_URL}
                             className="w-auto h-auto object-contain max-w-full max-h-full"
+                            style={{ transform: `rotate(${rotation}deg)` }}
                             onLoadingComplete={onLoad}
                         />
                     </motion.div>

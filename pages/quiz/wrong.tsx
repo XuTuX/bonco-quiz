@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
@@ -158,6 +158,12 @@ function Card({
     onToggle: () => void;
     isFirst: boolean;
 }) {
+    const rotation = useMemo(() => {
+        const angles = [0, 90, 180, 270];
+        const hash = Array.from(file).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        return angles[hash % angles.length];
+    }, [file]);
+
     return (
         <div
             className="w-full max-w-md lg:max-w-xl bg-white rounded-xl border-2
@@ -185,6 +191,7 @@ function Card({
                             placeholder="blur"
                             blurDataURL={BLUR_DATA_URL}
                             className="w-auto h-auto object-contain max-w-full max-h-full"
+                            style={{ transform: `rotate(${rotation}deg)` }}
                             onLoadingComplete={onLoad}
                         />
                     </motion.div>
