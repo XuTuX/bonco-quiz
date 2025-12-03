@@ -42,7 +42,7 @@ export default function PreviewPage() {
     const initials = sections.map(([ch]) => ch); // 사이드바용 ㄱ~ㅎ
 
     return (
-        <div className="relative min-h-screen overflow-hidden">
+        <div className="relative min-h-screen">
             <Background />
 
             <main className="relative z-10 min-h-screen flex flex-col items-center scroll-smooth pb-32">
