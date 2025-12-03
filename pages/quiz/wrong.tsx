@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
@@ -158,11 +158,8 @@ function Card({
     onToggle: () => void;
     isFirst: boolean;
 }) {
-    const rotation = useMemo(() => {
-        const angles = [0, 90, 180, 270];
-        const hash = Array.from(file).reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        return angles[hash % angles.length];
-    }, [file]);
+    const angles = [0, 90, 180, 270];
+    const rotation = angles[Math.floor(Math.random() * angles.length)];
 
     return (
         <div

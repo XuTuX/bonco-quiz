@@ -1,7 +1,7 @@
 // pages/learn.tsx
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { addWrongAnswer } from '@/utils/wrongAnswers';
@@ -276,11 +276,8 @@ function Card({
     onLoad: () => void;
     isFirst: boolean;
 }) {
-    const rotation = useMemo(() => {
-        const angles = [0, 90, 180, 270];
-        const hash = Array.from(file).reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        return angles[hash % angles.length];
-    }, [file]);
+    const angles = [0, 90, 180, 270];
+    const rotation = angles[Math.floor(Math.random() * angles.length)];
 
     return (
         <div className="w-full max-w-md lg:max-w-2xl xl:max-w-2xl bg-white rounded-xl border-2 border-green-100 shadow-md overflow-hidden">
