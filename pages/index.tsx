@@ -19,7 +19,7 @@ const SETS = [
   {
     id: '1-3',
     title: '본1-2학기 2차수시',
-    desc: '총 319개의 본초 이미지',
+    desc: '총 101개의 본초 이미지',
     gradient: 'from-indigo-400 to-indigo-600',
   },
 ];

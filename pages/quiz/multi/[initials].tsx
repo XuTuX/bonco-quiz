@@ -101,6 +101,26 @@ export default function QuizMulti() {
             setCards(shuffle([...wrongSet]));
         };
 
+        const restartQuiz = () => {
+            // Reload all cards from the beginning
+            fetch(`/imageList-${set}.json`)
+                .then((res) => res.json())
+                .then((allFiles: string[]) => {
+                    const filteredCards = shuffle(
+                        allFiles.filter((f) => {
+                            const ch = getChoseong(f.substring(f.lastIndexOf("/") + 1).replace(/\.(jpe?g|png)$/i, ""));
+                            return initialArr.includes(ch);
+                        })
+                    );
+                    setCards(filteredCards);
+                    setCurr(0);
+                    setShow(false);
+                    setImgLoaded(false);
+                    setWrongSet([]);
+                    setPhase("learn");
+                });
+        };
+
         return (
             <Center>
                 <div className="flex flex-col items-center space-y-6 px-4">
@@ -108,12 +128,20 @@ export default function QuizMulti() {
                         🎉 {initialArr.join(",")} 세트 완료!
                     </h1>
                     <ResultBlock title="오답 카드" list={wrongSet} onRetry={retryWrongSet} />
-                    <Link
-                        href={`/set/${set}`}
-                        className="mt-4 px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800"
-                    >
-                        나가기
-                    </Link>
+                    <div className="flex gap-4">
+                        <button
+                            onClick={restartQuiz}
+                            className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors"
+                        >
+                            🔄 처음부터 다시 풀기
+                        </button>
+                        <Link
+                            href={`/set/${set}`}
+                            className="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800 font-semibold transition-colors"
+                        >
+                            나가기
+                        </Link>
+                    </div>
                 </div>
             </Center>
         );
@@ -129,18 +157,47 @@ export default function QuizMulti() {
     // Preload the next image
     const nextImage = curr + 1 < cards.length ? `/images/${cards[curr + 1]}` : '';
 
+    const restartQuiz = () => {
+        // Reload all cards from the beginning
+        fetch(`/imageList-${set}.json`)
+            .then((res) => res.json())
+            .then((allFiles: string[]) => {
+                const filteredCards = shuffle(
+                    allFiles.filter((f) => {
+                        const ch = getChoseong(f.substring(f.lastIndexOf("/") + 1).replace(/\.(jpe?g|png)$/i, ""));
+                        return initialArr.includes(ch);
+                    })
+                );
+                setCards(filteredCards);
+                setCurr(0);
+                setShow(false);
+                setImgLoaded(false);
+                setWrongSet([]);
+            });
+    };
+
     return (
         <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-50 gap-4">
             <ImagePreloader href={nextImage} />
-            <div className="w-full max-w-md mb-4">
+            <div className="w-full max-w-md">
                 <div className="flex justify-between mb-1 text-green-800">
                     <span>{prog} / {total}</span>
                 </div>
-                <div className="w-full h-2 bg-gray-200 rounded-full">
+                <div className="w-full h-2 bg-gray-200 rounded-full mb-3">
                     <div
                         className="h-full bg-green-400 transition-all"
                         style={{ width: `${pct}%` }}
                     />
+                </div>
+                <div className="flex justify-center">
+                    <button
+                        onClick={restartQuiz}
+                        className="group flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 hover:border-blue-400 rounded-full transition-all duration-200 shadow-sm hover:shadow-md"
+                        title="처음부터 다시 풀기"
+                    >
+                        <span className="text-sm group-hover:rotate-180 transition-transform duration-500">🔄</span>
+                        <span className="text-xs font-semibold text-gray-700 group-hover:text-blue-600">처음부터 다시</span>
+                    </button>
                 </div>
             </div>
 
