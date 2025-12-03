@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { addWrongAnswer } from '@/utils/wrongAnswers';
 
 type Phase = 'learn' | 'batch-done' | 'all-done';
 type BatchChoice = number | 'all';
@@ -53,9 +54,16 @@ export default function Learn() {
         const f = currentSet[curr];
         if (!wrongBatch.includes(f)) setWrongBatch((w) => [...w, f]);
         if (!wrongTotal.includes(f)) setWrongTotal((w) => [...w, f]);
+
+        // Save to localStorage
+        const setId = router.query.set as string;
+        if (setId) {
+            addWrongAnswer(setId, f);
+        }
+
         setShow(false);
         setCurr((i) => i + 1);
-    }, [currentSet, curr, wrongBatch, wrongTotal]);
+    }, [currentSet, curr, wrongBatch, wrongTotal, router.query.set]);
 
     // 다음 배치로 이동
     const nextBatch = useCallback(() => {

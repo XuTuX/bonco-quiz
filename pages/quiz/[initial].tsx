@@ -7,6 +7,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
 import ImagePreloader from "@/components/ImagePreloader";
+import { addWrongAnswer } from "@/utils/wrongAnswers";
 
 type Phase = "loading" | "learn" | "done";
 
@@ -63,9 +64,13 @@ export default function QuizByInitial() {
     const dont = useCallback(() => {
         const f = cards[curr];
         if (!wrongSet.includes(f)) setWrongSet((w) => [...w, f]);
+        // Save to localStorage
+        if (set) {
+            addWrongAnswer(set as string, f);
+        }
         setShow(false);
         next();
-    }, [cards, curr, wrongSet, next]);
+    }, [cards, curr, wrongSet, next, set]);
 
     useEffect(() => {
         const key = (e: KeyboardEvent) => {

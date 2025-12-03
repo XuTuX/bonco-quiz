@@ -1,9 +1,10 @@
 // pages/set/[id].tsx
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import Background from '@/components/Background';
+import { getWrongAnswerStats } from '@/utils/wrongAnswers';
 
 type BatchChoice = 10 | 20 | 30 | 40 | 50 | 'all';
 const BATCH_OPTIONS: BatchChoice[] = [10, 20, 30, 40, 50, 'all'];
@@ -33,6 +34,14 @@ export default function SetHubPage() {
   const router = useRouter();
   const { id } = router.query;
   const [batchChoice, setBatchChoice] = useState<BatchChoice>(BATCH_OPTIONS[0]);
+  const [wrongCount, setWrongCount] = useState(0);
+
+  useEffect(() => {
+    if (id) {
+      const stats = getWrongAnswerStats(id as string);
+      setWrongCount(stats.totalCards);
+    }
+  }, [id]);
 
   if (!id) {
     return (
@@ -120,6 +129,18 @@ export default function SetHubPage() {
               className="block px-6 py-4 rounded-xl text-white font-bold text-center transition-all bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               ✨ 초성별 랜덤 퀴즈
+            </Link>
+
+            <Link
+              href={`/wrong-answers?set=${id}`}
+              className="relative block px-6 py-4 rounded-xl text-white font-bold text-center transition-all bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              📝 오답 노트
+              {wrongCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-yellow-400 text-red-900 text-xs font-bold rounded-full w-7 h-7 flex items-center justify-center animate-pulse">
+                  {wrongCount}
+                </span>
+              )}
             </Link>
           </div>
         </motion.div>

@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getChoseong } from "@/utils/hangul";
 import shuffle from "@/utils/shuffle";
 import ImagePreloader from "@/components/ImagePreloader";
+import { addWrongAnswer } from "@/utils/wrongAnswers";
 
 
 
@@ -68,8 +69,12 @@ export default function QuizMulti() {
         if (!wrongSet.includes(file)) {
             setWrongSet((w) => [...w, file]);
         }
+        // Save to localStorage
+        if (set) {
+            addWrongAnswer(set as string, file);
+        }
         know();
-    }, [curr, cards, wrongSet, know]);
+    }, [curr, cards, wrongSet, know, set]);
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
