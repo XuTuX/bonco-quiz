@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
@@ -158,8 +158,11 @@ function Card({
     onToggle: () => void;
     isFirst: boolean;
 }) {
+    const rotationRef = useRef<Record<string, number>>({});
     const angles = [0, 90, 180, 270];
-    const rotation = angles[Math.floor(Math.random() * angles.length)];
+    const rotation =
+        rotationRef.current[file] ??
+        (rotationRef.current[file] = angles[Math.floor(Math.random() * angles.length)]);
 
     return (
         <div

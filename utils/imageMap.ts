@@ -242,7 +242,7 @@ import img_237 from "../public/images/2-2/당귀.jpeg";
 import img_238 from "../public/images/2-2/당삼.jpeg";
 import img_239 from "../public/images/2-2/대자석.jpeg";
 import img_240 from "../public/images/2-2/대조.jpeg";
-import img_241 from "../public/images/2-2/동충화초.jpeg";
+import img_241 from "../public/images/2-2/동충하초.jpeg";
 import img_242 from "../public/images/2-2/두충.jpeg";
 import img_243 from "../public/images/2-2/마황근.jpeg";
 import img_244 from "../public/images/2-2/맥문동.jpeg";
@@ -563,7 +563,7 @@ export const imageMap: Record<string, any> = {
   "2-2/당삼.jpeg": img_238,
   "2-2/대자석.jpeg": img_239,
   "2-2/대조.jpeg": img_240,
-  "2-2/동충화초.jpeg": img_241,
+  "2-2/동충하초.jpeg": img_241,
   "2-2/두충.jpeg": img_242,
   "2-2/마황근.jpeg": img_243,
   "2-2/맥문동.jpeg": img_244,

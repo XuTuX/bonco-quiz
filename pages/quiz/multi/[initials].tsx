@@ -1,7 +1,7 @@
 // pages/quiz/multi/[initials].tsx
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -318,8 +318,11 @@ function Card({
     isFirst: boolean;
     resetKey: number;
 }) {
+    const rotationRef = useRef<Record<string, number>>({});
     const angles = [0, 90, 180, 270];
-    const rotation = angles[Math.floor(Math.random() * angles.length)];
+    const rotation =
+        rotationRef.current[file] ??
+        (rotationRef.current[file] = angles[Math.floor(Math.random() * angles.length)]);
 
     return (
         <div

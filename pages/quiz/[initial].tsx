@@ -5,7 +5,7 @@ import { getChoseong } from "@/utils/hangul";
 import shuffle from "@/utils/shuffle";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import ImagePreloader from "@/components/ImagePreloader";
 import { addWrongAnswer } from "@/utils/wrongAnswers";
 
@@ -316,8 +316,11 @@ function Card({
     isFirst: boolean;
     resetKey: number;
 }) {
+    const rotationRef = useRef<Record<string, number>>({});
     const angles = [0, 90, 180, 270];
-    const rotation = angles[Math.floor(Math.random() * angles.length)];
+    const rotation =
+        rotationRef.current[file] ??
+        (rotationRef.current[file] = angles[Math.floor(Math.random() * angles.length)]);
 
     return (
         <div
